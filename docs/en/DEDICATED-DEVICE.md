@@ -48,7 +48,7 @@ animation or lock screen, or turns off any Android protection.
    disabled, leave it.
 5. *Settings → Display → Sleep*: any value is fine. The app keeps the screen on by itself
    **only while the phone is charging**.
-6. Install OldPhoneClaude ([INSTALL.md](INSTALL.md)) and complete its guide, including the
+6. Install claude-phone ([INSTALL.md](INSTALL.md)) and complete its guide, including the
    **owner PIN**. Write the PIN down.
 
 ---
@@ -65,7 +65,7 @@ To undo: *Settings → Apps → Default apps → Home app* → choose the origin
 ### 1.2 Assistant gesture (optional)
 
 Owner menu → **Assistant app settings** → *Digital assistant app* (or *Assist app*) →
-OldPhoneClaude. The phone's assistant gesture (long press on Home; on some phones a corner
+claude-phone. The phone's assistant gesture (long press on Home; on some phones a corner
 swipe or a long press on the power button) then starts listening.
 
 There is deliberately **no "Hey Claude"**: the phone never listens with the screen off or in
@@ -145,7 +145,7 @@ It should print `0`.
 
 ### 2.4 Make the app device owner
 
-OldPhoneClaude must already be installed. Then:
+claude-phone must already be installed. Then:
 
 ```bash
 adb shell dpm set-device-owner io.github.forkyfor.oldphone/.AdminReceiver
@@ -188,7 +188,7 @@ From the least to the most drastic:
    ordinary app again and can be uninstalled. To get dedicated mode back you need a factory
    reset and adb again.
 3. **If the app does not start or you lost the PIN, with USB debugging still on:** install a
-   working version over it from the computer (`adb install -r OldPhoneClaude-….apk`; it must
+   working version over it from the computer (`adb install -r claude-phone-….apk`; it must
    be signed with the same key). `adb uninstall` and `dpm remove-active-admin` do **not**
    work on a device owner installed normally.
 4. **Last resort: factory reset from recovery.** Switch the phone off, then hold the key
@@ -200,7 +200,7 @@ From the least to the most drastic:
 ### 2.7 Updating the app in dedicated mode
 
 Turn dedicated mode off (2.6, step 1), install the new APK ([INSTALL.md](INSTALL.md)), turn
-it on again. Or from the computer: `adb install -r OldPhoneClaude-….apk`.
+it on again. Or from the computer: `adb install -r claude-phone-….apk`.
 
 ---
 

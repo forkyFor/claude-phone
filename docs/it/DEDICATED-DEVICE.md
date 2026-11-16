@@ -50,7 +50,7 @@ l'animazione di avvio o la schermata di blocco, o disattiva protezioni di Androi
    si può disattivare, lasciala.
 5. *Impostazioni → Display → Sospensione*: va bene qualsiasi valore. L'app tiene acceso lo
    schermo da sola, **solo mentre il telefono è in carica**.
-6. Installa OldPhoneClaude ([INSTALL.md](INSTALL.md)) e completa la sua guida, compreso il
+6. Installa claude-phone ([INSTALL.md](INSTALL.md)) e completa la sua guida, compreso il
    **PIN del proprietario**. Scrivi il PIN da qualche parte.
 
 ---
@@ -69,7 +69,7 @@ originale.
 ### 1.2 Gesto dell'assistente (facoltativo)
 
 Menu del proprietario → **Impostazioni dell'app assistente** → *App assistente digitale* →
-OldPhoneClaude. Il gesto dell'assistente del telefono (pressione lunga su Home; su alcuni
+claude-phone. Il gesto dell'assistente del telefono (pressione lunga su Home; su alcuni
 telefoni uno scorrimento dall'angolo o la pressione lunga del tasto di accensione) avvia
 l'ascolto.
 
@@ -153,7 +153,7 @@ Deve stampare `0`.
 
 ### 2.4 Rendi l'app device owner
 
-OldPhoneClaude deve essere già installata. Poi:
+claude-phone deve essere già installata. Poi:
 
 ```bash
 adb shell dpm set-device-owner io.github.forkyfor.oldphone/.AdminReceiver
@@ -198,7 +198,7 @@ Dal meno al più drastico:
    modalità dedicata serviranno di nuovo ripristino di fabbrica e adb.
 3. **Se l'app non parte o hai perso il PIN, con il debug USB ancora attivo:** installa dal
    computer una versione funzionante sopra quella presente (`adb install -r
-   OldPhoneClaude-….apk`; deve essere firmata con la stessa chiave). `adb uninstall` e
+   claude-phone-….apk`; deve essere firmata con la stessa chiave). `adb uninstall` e
    `dpm remove-active-admin` **non** funzionano su un device owner installato normalmente.
 4. **Ultima risorsa: ripristino di fabbrica dal recovery.** Spegni il telefono, poi tieni
    premuta la combinazione di tasti del tuo modello (spesso **Accensione + Volume su**, sui
@@ -211,7 +211,7 @@ Dal meno al più drastico:
 
 Disattiva la modalità dedicata (2.6, punto 1), installa il nuovo APK
 ([INSTALL.md](INSTALL.md)), riattivala. Oppure dal computer: `adb install -r
-OldPhoneClaude-….apk`.
+claude-phone-….apk`.
 
 ---
 

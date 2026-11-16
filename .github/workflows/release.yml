@@ -92,5 +92,5 @@ jobs:
             gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
           else
             gh release create "$GITHUB_REF_NAME" dist/*.apk dist/SHA256SUMS.txt \
-              --title "OldPhoneClaude ${GITHUB_REF_NAME#v}" --notes-file notes.md
+              --title "claude-phone ${GITHUB_REF_NAME#v}" --notes-file notes.md
           fi

@@ -1,10 +1,10 @@
-# OldPhoneClaude
+# claude-phone
 
 **Trasforma un vecchio telefono Android in un dispositivo dedicato e sempre acceso per Claude.**
 
 *English: [README.md](README.md)*
 
-> **Progetto indipendente.** OldPhoneClaude non è affiliato, approvato né supportato da
+> **Progetto indipendente.** claude-phone non è affiliato, approvato né supportato da
 > Anthropic. "Claude" è un marchio di Anthropic. Questa app è un browser dedicato al sito
 > ufficiale **https://claude.ai**: l'accesso avviene lì, con il tuo account. Il nome è
 > provvisorio e può cambiare.
@@ -149,7 +149,7 @@ Nella pagina di Claude usa **Continua con l'email**.
 | Parlare | Tocca il microfono grande, parla, tocca il pulsante di invio della pagina. Di' solo "nuova chat", "apri progetti" o "indietro" per navigare. |
 | Usare la modalità vocale di Claude | Usa il pulsante voce dentro la pagina; l'app passa il microfono alla pagina. |
 | Allegare una foto | Tocca **Fotocamera**, scatta, poi tocca il pulsante allega (+) **nella pagina**: la foto viene aggiunta senza altre domande. Oppure tocca prima il pulsante allega della pagina e scegli Fotocamera / Foto / File. |
-| Inviare qualcosa da un'altra app | Condividi → OldPhoneClaude. Il testo apre una nuova chat già compilata; i file restano in attesa finché tocchi il pulsante allega della pagina. |
+| Inviare qualcosa da un'altra app | Condividi → claude-phone. Il testo apre una nuova chat già compilata; i file restano in attesa finché tocchi il pulsante allega della pagina. |
 | Ricaricare | Trascina verso il basso dal bordo superiore della pagina finché compare "Rilascia per ricaricare", oppure menu del proprietario → Ricarica. |
 | Aprire il menu del proprietario | Tieni premuto il microfono per 3 secondi e inserisci il PIN. Con TalkBack: il pulsante del microfono ha l'azione "Menu del proprietario". |
 | Riattivare dalla schermata di riposo | Toccala, oppure usa il gesto dell'assistente. |
@@ -187,7 +187,7 @@ non trova il campo, il testo viene copiato per poterlo incollare.
 | "App non installata" durante l'aggiornamento | Il nuovo APK ha una firma diversa (build di debug). Disinstalla, reinstalla, accedi di nuovo. Vedi [INSTALL](docs/it/INSTALL.md#build-di-debug). |
 | Foto o file non vengono allegati | Dopo lo scatto tocca il pulsante allega nella pagina. Da Condividi non si accettano file oltre 30 MB. |
 | Il telefono è lento o la pagina si ricarica da sola | I telefoni vecchi hanno poca memoria: disattiva le app inutili, riavvia, attiva *Riduci le animazioni*. |
-| PIN del proprietario dimenticato | *Impostazioni di Android → App → OldPhoneClaude → Spazio di archiviazione → Cancella dati* azzera l'app (e ti disconnette). In modalità dedicata non è raggiungibile: vedi [le vie d'uscita](docs/it/DEDICATED-DEVICE.md#26-come-annullare). |
+| PIN del proprietario dimenticato | *Impostazioni di Android → App → claude-phone → Spazio di archiviazione → Cancella dati* azzera l'app (e ti disconnette). In modalità dedicata non è raggiungibile: vedi [le vie d'uscita](docs/it/DEDICATED-DEVICE.md#26-come-annullare). |
 | Bloccato in modalità dedicata | [docs/it/DEDICATED-DEVICE.md](docs/it/DEDICATED-DEVICE.md#26-come-annullare) |
 
 ## Limiti noti

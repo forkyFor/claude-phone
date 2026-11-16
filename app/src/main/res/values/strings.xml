@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- To add a language: copy this file to res/values-xx/strings.xml and translate every entry. -->
 <resources>
-    <string name="app_name" translatable="false">OldPhoneClaude</string>
+    <string name="app_name" translatable="false">claude-phone</string>
     <string name="disclaimer">Independent open source project. Not affiliated with, endorsed or supported by Anthropic. “Claude” is a trademark of Anthropic. This app only shows the official claude.ai website.</string>
-    <string name="admin_description">Lets the owner lock this phone to OldPhoneClaude (dedicated mode).</string>
+    <string name="admin_description">Lets the owner lock this phone to claude-phone (dedicated mode).</string>
     <string name="bar_new_chat">New chat</string>
     <string name="bar_projects">Projects</string>
     <string name="bar_mic">Speak</string>
@@ -104,7 +104,7 @@
     <string name="btn_mode_home">Make it the Home screen</string>
     <string name="btn_mode_app">Use it as a normal app</string>
     <string name="setup_mode_more">Stronger locking (screen pinning, dedicated mode) is in the owner menu and in the project guide.</string>
-    <string name="setup_home_manual">Open Android settings → Apps → Default apps → Home app, and choose OldPhoneClaude.</string>
+    <string name="setup_home_manual">Open Android settings → Apps → Default apps → Home app, and choose claude-phone.</string>
     <string name="setup_signin_title">Sign in</string>
     <string name="setup_signin_body">Next comes the official Claude sign-in page. Choose “Continue with email”: sign-in with Google is usually refused inside apps like this one.</string>
     <string name="setup_signin_tips">Good to know: the big button listens to you. Keep it pressed for 3 seconds to open the owner menu (PIN required).</string>
@@ -143,7 +143,7 @@
     <string name="owner_read">Read replies aloud (Read button)</string>
     <string name="owner_read_help">Uses the phone’s text-to-speech. Fragile for the same reason; selecting text in the page and touching Read always works.</string>
     <string name="owner_assistant">Assistant app settings</string>
-    <string name="owner_assistant_help">Choose OldPhoneClaude as the digital assistant app and the phone’s assistant gesture (long press on Home, or the power button on some phones) starts listening. There is no always-on “Hey Claude”: the phone never listens with the screen off.</string>
+    <string name="owner_assistant_help">Choose claude-phone as the digital assistant app and the phone’s assistant gesture (long press on Home, or the power button on some phones) starts listening. There is no always-on “Hey Claude”: the phone never listens with the screen off.</string>
     <string name="owner_sec_display">Screen</string>
     <string name="owner_keep_on">Keep the screen on while charging</string>
     <string name="owner_rest">Dark rest screen with a moving clock</string>
@@ -170,7 +170,7 @@
     <string name="owner_updates_locked">Turn off dedicated mode first, or visit %1$s/releases from another device.</string>
     <string name="owner_updates_help">The app never checks or downloads anything by itself.</string>
     <string name="owner_change_pin">Change the owner PIN</string>
-    <string name="owner_about">OldPhoneClaude %1$s · Apache License 2.0 · source: %2$s\nNo analytics, no ads, no server of the author. No Anthropic API and no API key: you use your own account on the official site.</string>
+    <string name="owner_about">claude-phone %1$s · Apache License 2.0 · source: %2$s\nNo analytics, no ads, no server of the author. No Anthropic API and no API key: you use your own account on the official site.</string>
     <string name="setup_engine_checking">Checking the web engine of this phone…</string>
     <string name="setup_engine_steps">What to do: 1. Touch “Update the web engine”. 2. In the store touch Update and wait until it finishes. 3. Do the same with Chrome. 4. Come back here: the check runs again by itself.</string>
     <string name="btn_update_chrome">Update Chrome too</string>

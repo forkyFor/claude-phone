@@ -70,7 +70,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: OldPhoneClaude-apks
+          name: claude-phone-apks
           path: |
             dist/*.apk
             dist/SHA256SUMS.txt

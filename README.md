@@ -1,10 +1,10 @@
-# OldPhoneClaude
+# claude-phone
 
 **Turn an old Android phone into a dedicated, always-on device for Claude.**
 
 *Italiano: [README.it.md](README.it.md)*
 
-> **Independent project.** OldPhoneClaude is not affiliated with, endorsed by or supported
+> **Independent project.** claude-phone is not affiliated with, endorsed by or supported
 > by Anthropic. "Claude" is a trademark of Anthropic. This app is a dedicated browser for the
 > official website **https://claude.ai**: you sign in there with your own account. The name
 > is provisional and may change.
@@ -142,7 +142,7 @@ Use **Continue with email** on the Claude page.
 | Talk | Touch the big microphone, speak, touch the page's send button. Say only "new chat", "open projects" or "back" to navigate. |
 | Use Claude's own voice mode | Use the voice button inside the page; the app passes the microphone to the page. |
 | Attach a photo | Touch **Camera**, take the photo, then touch the attach (+) button **in the page**: the photo is added without asking again. Or touch the page's attach button first and choose Camera / Photos / Files. |
-| Send something from another app | Share → OldPhoneClaude. Text opens a new chat with the text filled in; files wait until you touch the page's attach button. |
+| Send something from another app | Share → claude-phone. Text opens a new chat with the text filled in; files wait until you touch the page's attach button. |
 | Reload | Pull down from the top edge of the page until "Release to reload" appears, or owner menu → Reload. |
 | Open the owner menu | Keep the microphone pressed for 3 seconds, enter your PIN. With TalkBack: the microphone button has an "Owner menu" action. |
 | Wake the rest screen | Touch it, or use the assistant gesture. |
@@ -179,7 +179,7 @@ the text is copied so you can paste it.
 | "App not installed" when updating | The new APK has a different signature (debug builds). Uninstall, reinstall, sign in again. See [INSTALL](docs/en/INSTALL.md#debug-builds). |
 | Photo or file does not attach | After taking the photo, touch the attach button in the page. Files over 30 MB are not accepted from Share. |
 | The phone is slow or the page reloads by itself | Old phones have little memory: disable unused apps, restart the phone, turn on *Reduce animations*. |
-| Forgot the owner PIN | Android *Settings → Apps → OldPhoneClaude → Storage → Clear data* resets the app (and signs you out). In dedicated mode that is not reachable: see [the way out](docs/en/DEDICATED-DEVICE.md#26-how-to-undo-it). |
+| Forgot the owner PIN | Android *Settings → Apps → claude-phone → Storage → Clear data* resets the app (and signs you out). In dedicated mode that is not reachable: see [the way out](docs/en/DEDICATED-DEVICE.md#26-how-to-undo-it). |
 | Stuck in dedicated mode | [docs/en/DEDICATED-DEVICE.md](docs/en/DEDICATED-DEVICE.md#26-how-to-undo-it) |
 
 ## Known limits
