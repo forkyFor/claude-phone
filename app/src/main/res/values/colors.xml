@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light palette. Text/background pairs keep a contrast ratio of at least 4.5:1. -->
+<resources>
+    <color name="bg">#FFFFFF</color>
+    <color name="surface">#F1F3F4</color>
+    <color name="outline">#8A9197</color>
+    <color name="on_bg">#16191C</color>
+    <color name="on_bg_muted">#4A5157</color>
+    <color name="accent">#0B6B63</color>
+    <color name="on_accent">#FFFFFF</color>
+    <color name="danger">#B3261E</color>
+    <color name="ripple">#33808080</color>
+    <color name="icon_bg">#0B3B45</color>
+    <color name="icon_fg">#FFFFFF</color>
+    <color name="icon_dot">#6EE7D8</color>
+</resources>
