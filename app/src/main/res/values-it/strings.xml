@@ -170,6 +170,12 @@
     <string name="owner_updates_help">L’app non controlla né scarica mai nulla da sola.</string>
     <string name="owner_change_pin">Cambia il PIN del proprietario</string>
     <string name="owner_about">OldPhoneClaude %1$s · Licenza Apache 2.0 · sorgente: %2$s\nNessuna analitica, nessuna pubblicità, nessun server dell’autore. Nessuna API di Anthropic e nessuna chiave API: usi il tuo account sul sito ufficiale.</string>
+    <string name="setup_engine_checking">Controllo il motore web di questo telefono…</string>
+    <string name="setup_engine_steps">Cosa fare: 1. Tocca “Aggiorna il motore web”. 2. Nello store tocca Aggiorna e attendi la fine. 3. Fai lo stesso con Chrome. 4. Torna qui: il controllo riparte da solo.</string>
+    <string name="btn_update_chrome">Aggiorna anche Chrome</string>
+    <string name="btn_get_gecko">Scarica l’edizione gecko</string>
+    <string name="btn_use_gecko">Usa il motore GeckoView incluso</string>
+    <string name="btn_check_again">Controlla di nuovo</string>
     <plurals name="attach_ready">
         <item quantity="one">%d file pronto. Tocca il pulsante allega (+) nella pagina per aggiungerlo.</item>
         <item quantity="many">%d file pronti. Tocca il pulsante allega (+) nella pagina per aggiungerli.</item>

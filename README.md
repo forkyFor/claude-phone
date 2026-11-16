@@ -107,7 +107,7 @@ The full table, how it was measured and how to add your phone with a pull reques
 | CI build, 12 unit tests, lint | ✔ verified (GitHub Actions green) |
 | Installs and starts on Android 5.0 → 15 | ✔ verified **on emulators only** |
 | First-run guide, PIN, owner menu, native error screens | ✔ verified **on emulators only** (automated taps, not by eye) |
-| Official sign-in page renders | ✔ on emulators with **GeckoView 160 (Android 8.0+)** and **WebView 83** · ✘ WebView ≤ 74 · ✘ Android ≤ 7.0 (certificate not trusted) |
+| Official sign-in page renders | ✔ on emulators with **GeckoView 160 (Android 8.0+)**; WebView 83 on an emulator, but **a real phone with an outdated WebView got a broken page**, so the app now asks for WebView 111+ · ✘ WebView ≤ 74 · ✘ Android ≤ 7.0 (certificate not trusted) |
 | Signing in, chatting, voice, camera, files, share, downloads | **not verified on a real device** (tests have no account, no microphone, no camera) |
 | Home role, assistant, screen pinning, dedicated mode, rest screen | **not verified on a real device** |
 

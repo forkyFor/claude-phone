@@ -110,7 +110,7 @@ request: **[docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)**.
 | Build in CI, 12 test unitari, lint | ✔ verificato (GitHub Actions verde) |
 | Si installa e parte su Android 5.0 → 15 | ✔ verificato **solo su emulatore** |
 | Guida iniziale, PIN, menu del proprietario, schermate di errore native | ✔ verificato **solo su emulatore** (tocchi automatici, non a occhio) |
-| La pagina di accesso ufficiale viene disegnata | ✔ su emulatore con **GeckoView 160 (Android 8.0+)** e **WebView 83** · ✘ WebView ≤ 74 · ✘ Android ≤ 7.0 (certificato non attendibile) |
+| La pagina di accesso ufficiale viene disegnata | ✔ su emulatore con **GeckoView 160 (Android 8.0+)**; WebView 83 su emulatore, ma **un telefono reale con WebView non aggiornato ha mostrato una pagina rotta**, quindi ora l'app richiede WebView 111+ · ✘ WebView ≤ 74 · ✘ Android ≤ 7.0 (certificato non attendibile) |
 | Accesso, chat, voce, fotocamera, file, condivisione, download | **non verificato su dispositivo reale** (le prove non hanno account, microfono né fotocamera) |
 | Ruolo Home, assistente, fissaggio schermo, modalità dedicata, schermata di riposo | **non verificato su dispositivo reale** |
 

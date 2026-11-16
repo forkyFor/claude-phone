@@ -88,6 +88,7 @@ var __opcTools = (function () {
       fields: document.querySelectorAll('input, textarea, [contenteditable="true"]').length,
       buttons: document.querySelectorAll('button, [role="button"]').length,
       challenge: challenge ? 1 : 0,
+      outdated: /browser or device software is out of date/i.test(body ? body.innerText || '' : '') ? 1 : 0,
       state: document.readyState
     });
   }

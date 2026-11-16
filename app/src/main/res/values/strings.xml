@@ -171,6 +171,12 @@
     <string name="owner_updates_help">The app never checks or downloads anything by itself.</string>
     <string name="owner_change_pin">Change the owner PIN</string>
     <string name="owner_about">OldPhoneClaude %1$s · Apache License 2.0 · source: %2$s\nNo analytics, no ads, no server of the author. No Anthropic API and no API key: you use your own account on the official site.</string>
+    <string name="setup_engine_checking">Checking the web engine of this phone…</string>
+    <string name="setup_engine_steps">What to do: 1. Touch “Update the web engine”. 2. In the store touch Update and wait until it finishes. 3. Do the same with Chrome. 4. Come back here: the check runs again by itself.</string>
+    <string name="btn_update_chrome">Update Chrome too</string>
+    <string name="btn_get_gecko">Download the gecko edition</string>
+    <string name="btn_use_gecko">Use the built-in GeckoView engine</string>
+    <string name="btn_check_again">Check again</string>
     <plurals name="attach_ready">
         <item quantity="one">%d file is ready. Touch the attach (+) button in the page to add it.</item>
         <item quantity="other">%d files are ready. Touch the attach (+) button in the page to add them.</item>

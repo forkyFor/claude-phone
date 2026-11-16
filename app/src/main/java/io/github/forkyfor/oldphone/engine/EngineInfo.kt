@@ -9,12 +9,48 @@ import android.webkit.WebView
 object EngineInfo {
     /**
      * Below this Chromium major the app warns before loading the site ("Try anyway" stays
-     * available). Chosen from the emulator probe in docs/COMPATIBILITY.md: WebView 83 is the
-     * oldest one seen rendering the sign-in page, while 74 and older cannot even run the
-     * site's bot check (JavaScript syntax error). What the site needs after sign-in was not
-     * measured; the blank-page check after loading is the real safety net.
+     * available). History of this number, see docs/COMPATIBILITY.md: emulators showed the
+     * sign-in page appearing on WebView 83, but the first real phone (Redmi Note 7) got a
+     * half-styled page and the site's own "browser is out of date" notice. 111 is the first
+     * version that passes [selfTest], which checks the web features modern sites rely on.
      */
-    const val MIN_WEBVIEW_MAJOR = 83
+    const val MIN_WEBVIEW_MAJOR = 111
+
+    private const val SELF_TEST_JS = "(function(){try{var c=window.CSS;return String(!!(c&&c.supports&&" +
+        "c.supports('color','color-mix(in srgb, red, blue)')&&c.supports('selector(:has(a))')&&" +
+        "typeof CSSLayerBlockRule!=='undefined'&&typeof structuredClone==='function'&&[].at));}" +
+        "catch(e){return 'false';}})()"
+
+    /**
+     * Asks the installed WebView itself whether it has the features a current site needs
+     * (CSS color-mix, :has(), cascade layers, structuredClone, Array.at). It loads an empty
+     * local page: nothing is fetched from the network. Result: true = recent enough,
+     * false = too old, null = no usable WebView.
+     */
+    fun selfTest(ctx: Context, done: (Boolean?) -> Unit) {
+        val handler = android.os.Handler(android.os.Looper.getMainLooper())
+        try {
+            val web = WebView(ctx)
+            var finished = false
+            fun finish(result: Boolean?) {
+                if (finished) return
+                finished = true
+                try { web.destroy() } catch (e: Throwable) { }
+                done(result)
+            }
+            @android.annotation.SuppressLint("SetJavaScriptEnabled")
+            web.settings.javaScriptEnabled = true
+            web.webViewClient = object : android.webkit.WebViewClient() {
+                override fun onPageFinished(view: WebView, url: String) {
+                    view.evaluateJavascript(SELF_TEST_JS) { r -> finish(r?.contains("true") == true) }
+                }
+            }
+            web.loadDataWithBaseURL("https://selftest.invalid/", "<!doctype html><title>t</title>", "text/html", "utf-8", null)
+            handler.postDelayed({ finish(null) }, 8000L)
+        } catch (t: Throwable) {
+            handler.post { done(null) }
+        }
+    }
 
     class WebViewInfo(val packageName: String?, val version: String?, val major: Int) {
         val present get() = major > 0 || version != null

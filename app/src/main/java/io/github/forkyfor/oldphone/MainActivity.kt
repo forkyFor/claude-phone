@@ -709,6 +709,9 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
                     // Measurement runs keep sampling so slow engines and bot checks are seen over time.
                     blankChecksLeft--
                     if (blankChecksLeft > 0) handler.postDelayed(this, BLANK_CHECK_MS)
+                } else if (o != null && o.optInt("outdated", 0) == 1 && problem == null && !oldEngineAccepted) {
+                    // The site itself says the engine is out of date: say what to do, natively.
+                    showProblem(Problem.OLD_ENGINE, "")
                 } else if (o != null && o.optInt("text", 1) == 0 && problem == null) {
                     blankChecksLeft--
                     if (blankChecksLeft > 0) handler.postDelayed(this, BLANK_CHECK_MS) else showProblem(Problem.BLANK, "")
@@ -756,6 +759,12 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         when (kind) {
             Problem.OLD_ENGINE -> {
                 col.addView(Ui.primaryButton(this, getString(R.string.btn_update_webview)) { openWebViewUpdate() })
+                col.addView(Ui.secondaryButton(this, getString(R.string.btn_update_chrome)) { openStore("com.android.chrome") })
+                if (!BuildConfig.HAS_GECKO && Build.VERSION.SDK_INT >= 26) {
+                    col.addView(Ui.secondaryButton(this, getString(R.string.btn_get_gecko)) {
+                        requireOwner { openExternal(Uri.parse(BuildConfig.REPO_URL + "/releases/latest")) }
+                    })
+                }
                 col.addView(Ui.secondaryButton(this, getString(R.string.btn_try_anyway)) {
                     oldEngineAccepted = true
                     hideProblem()
@@ -798,9 +807,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         content.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_AUTO
     }
 
-    private fun openWebViewUpdate() {
+    private fun openWebViewUpdate() = openStore(EngineInfo.webView(this).packageName ?: "com.google.android.webview")
+
+    private fun openStore(pkg: String) {
         requireOwner {
-            val pkg = EngineInfo.webView(this).packageName ?: "com.google.android.webview"
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$pkg")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             } catch (e: Exception) {

@@ -8,7 +8,10 @@
   site cannot work.
 - **The lowest setup on which the official sign-in page was actually seen rendering** is:
   - **GeckoView 160 on Android 8.0** (gecko edition), and
-  - **Android System WebView 83** (seen on an Android 11 emulator).
+  - **Android System WebView 83** on an Android 11 emulator. **A real phone contradicted
+    this:** on a Redmi Note 7 with an outdated WebView the page came up half-styled with the
+    site's own "browser is out of date" notice. The app now treats **WebView below 111**, or
+    any WebView failing its capability check, as too old.
 - **WebView 74 and older cannot work**: the site's bot check itself fails with a JavaScript
   syntax error or stays blank.
 - **Android 7.0 and older very probably cannot work at all**: on stock Android 5.0, 6.0 and
@@ -104,11 +107,12 @@ any more reliably than testing on a real phone would show.
 
 ## Real devices
 
-**None yet.** Add yours with the *Device report* issue or a pull request adding a row here.
+One so far. Add yours with the *Device report* issue or a pull request adding a row here.
 Only write what you actually tried.
 
 | Phone (year) | Android | Edition, engine + version | Sign-in | Chat | Voice (page / native) | Camera, files | Home / pin / dedicated | Notes | Reported by |
 |---|---|---|---|---|---|---|---|---|---|
+| Xiaomi Redmi Note 7 (2019) | 10 (MIUI 12.5.1, patch 2021-08) | lite 0.1.0 debug, system WebView **not updated** (version not recorded, at least 83) | ✘ page half-styled, sign-in form missing, site notice "your browser or device software is out of date" | – | – | – | – | App starts, native bar shown. Led to the capability check in setup and the 111 threshold. Retest pending after updating WebView. | project owner |
 | *your phone here* | | | | | | | | | |
 
 ## Feature status
@@ -173,5 +177,5 @@ emulatore; "Not verified" = **non verificato su dispositivo reale** né su emula
 
 ### Dispositivi reali
 
-**Ancora nessuno.** Aggiungi il tuo con la issue *Device report* o con una pull request che
+Uno finora. Aggiungi il tuo con la issue *Device report* o con una pull request che
 aggiunge una riga alla tabella "Real devices". Scrivi solo ciò che hai davvero provato.

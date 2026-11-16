@@ -26,6 +26,9 @@ class SetupActivity : BaseActivity() {
     private var step = Step.WELCOME
     private var waitingForHome = false
     private var note: String? = null
+    private var engineTested = false
+    private var engineTesting = false
+    private var engineResult: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +48,9 @@ class SetupActivity : BaseActivity() {
             waitingForHome = false
             go(Step.SIGN_IN)
         } else {
-            render() // e.g. coming back from Wi-Fi settings or the Play Store
+            // Coming back from Wi-Fi settings or the store: look again, including the engine.
+            if (step == Step.ENGINE && !engineTesting) engineTested = false
+            render()
         }
     }
 
@@ -104,31 +109,7 @@ class SetupActivity : BaseActivity() {
                     col.addView(Ui.secondaryButton(this, getString(R.string.btn_skip)) { next() })
                 }
             }
-            Step.ENGINE -> {
-                val info = EngineInfo.webView(this)
-                val ok = info.major >= EngineInfo.MIN_WEBVIEW_MAJOR
-                col.addView(Ui.title(this, getString(R.string.setup_engine_title)))
-                if (ok) {
-                    col.addView(Ui.body(this, getString(R.string.setup_engine_ok)))
-                    col.addView(Ui.primaryButton(this, getString(R.string.btn_continue)) { next() })
-                } else {
-                    col.addView(Ui.body(this, getString(if (info.present) R.string.err_old_cause else R.string.err_noengine_cause)))
-                    col.addView(Ui.body(this, getString(R.string.err_old_fix)))
-                    if (BuildConfig.HAS_GECKO) col.addView(Ui.body(this, getString(R.string.err_try_other_engine)))
-                    else if (Build.VERSION.SDK_INT >= 26) col.addView(Ui.body(this, getString(R.string.err_try_gecko_build)))
-                    col.addView(Ui.primaryButton(this, getString(R.string.btn_update_webview)) {
-                        val pkg = info.packageName ?: "com.google.android.webview"
-                        try {
-                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$pkg")))
-                        } catch (e: Exception) {
-                            note = getString(R.string.no_store)
-                            render()
-                        }
-                    })
-                    col.addView(Ui.secondaryButton(this, getString(R.string.btn_continue_anyway)) { next() })
-                }
-                col.addView(Ui.body(this, "$info · Android ${Build.VERSION.RELEASE}", muted = true))
-            }
+            Step.ENGINE -> engineStep(col)
             Step.MIC -> permissionStep(col, Manifest.permission.RECORD_AUDIO, R.string.setup_mic_title, R.string.setup_mic_body, R.string.btn_allow_mic)
             Step.CAMERA -> permissionStep(col, Manifest.permission.CAMERA, R.string.setup_camera_title, R.string.setup_camera_body, R.string.btn_allow_camera)
             Step.PIN -> {
@@ -174,6 +155,70 @@ class SetupActivity : BaseActivity() {
         }
         note?.let { col.addView(Ui.body(this, it, muted = true)) }
         setContentView(Ui.scroll(this, col))
+    }
+
+    /**
+     * Checks the web engine for real (version and capabilities) before the owner ever sees
+     * the site, and leads straight to the update when it is not good enough.
+     */
+    private fun engineStep(col: LinearLayout) {
+        val info = EngineInfo.webView(this)
+        col.addView(Ui.title(this, getString(R.string.setup_engine_title)))
+        if (!engineTested) {
+            col.addView(Ui.body(this, getString(R.string.setup_engine_checking)))
+            if (!engineTesting) {
+                engineTesting = true
+                EngineInfo.selfTest(this) { result ->
+                    engineTesting = false
+                    engineTested = true
+                    engineResult = result
+                    if (!isFinishing && step == Step.ENGINE) render()
+                }
+            }
+            return
+        }
+        val ok = engineResult == true && (info.major == 0 || info.major >= EngineInfo.MIN_WEBVIEW_MAJOR)
+        if (ok) {
+            col.addView(Ui.body(this, getString(R.string.setup_engine_ok)))
+            col.addView(Ui.primaryButton(this, getString(R.string.btn_continue)) { next() })
+        } else {
+            col.addView(Ui.body(this, getString(if (engineResult == null) R.string.err_noengine_cause else R.string.err_old_cause)))
+            col.addView(Ui.body(this, getString(R.string.setup_engine_steps)))
+            val store = { pkg: String ->
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$pkg")))
+                } catch (e: Exception) {
+                    note = getString(R.string.no_store)
+                    render()
+                }
+            }
+            col.addView(Ui.primaryButton(this, getString(R.string.btn_update_webview)) {
+                store(info.packageName ?: "com.google.android.webview")
+            })
+            col.addView(Ui.secondaryButton(this, getString(R.string.btn_update_chrome)) { store("com.android.chrome") })
+            if (BuildConfig.HAS_GECKO) {
+                col.addView(Ui.secondaryButton(this, getString(R.string.btn_use_gecko)) {
+                    prefs.engine = "gecko"
+                    next()
+                })
+            } else if (Build.VERSION.SDK_INT >= 26) {
+                col.addView(Ui.body(this, getString(R.string.err_try_gecko_build), muted = true))
+                col.addView(Ui.secondaryButton(this, getString(R.string.btn_get_gecko)) {
+                    try {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.REPO_URL + "/releases/latest")))
+                    } catch (e: Exception) {
+                        note = getString(R.string.no_browser)
+                        render()
+                    }
+                })
+            }
+            col.addView(Ui.secondaryButton(this, getString(R.string.btn_check_again)) {
+                engineTested = false
+                render()
+            })
+            col.addView(Ui.secondaryButton(this, getString(R.string.btn_continue_anyway)) { next() })
+        }
+        col.addView(Ui.body(this, "$info · Android ${Build.VERSION.RELEASE}", muted = true))
     }
 
     private fun pinField(hint: Int) = EditText(this).apply {
