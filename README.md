@@ -71,7 +71,7 @@ allow the installation, open it and follow the guide.
 | Edition | Android | Web engine | APK size |
 |---|---|---|---|
 | **lite** | 5.0+ | the phone's Android System WebView | about 0.1 MB (signed release), about 1 MB (debug) |
-| **gecko** | 8.0+ | WebView **or** bundled GeckoView (Firefox's engine), selectable in the owner menu | large: see the release page (the engine alone is over 100 MB) |
+| **gecko** | 8.0+ | WebView **or** bundled GeckoView (Firefox's engine), selectable in the owner menu | large: 160–200 MB as a debug build |
 
 ## What works with what
 
@@ -100,8 +100,20 @@ Both lock levels, how to undo them and what to do when something goes wrong:
 The full table, how it was measured and how to add your phone with a pull request:
 **[docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)**.
 
-<!-- STATUS:BEGIN -->
-<!-- STATUS:END -->
+**Status on 2026-11-16, honestly:**
+
+| | |
+|---|---|
+| CI build, 12 unit tests, lint | ✔ verified (GitHub Actions green) |
+| Installs and starts on Android 5.0 → 15 | ✔ verified **on emulators only** |
+| First-run guide, PIN, owner menu, native error screens | ✔ verified **on emulators only** (automated taps, not by eye) |
+| Official sign-in page renders | ✔ on emulators with **GeckoView 160 (Android 8.0+)** and **WebView 83** · ✘ WebView ≤ 74 · ✘ Android ≤ 7.0 (certificate not trusted) |
+| Signing in, chatting, voice, camera, files, share, downloads | **not verified on a real device** (tests have no account, no microphone, no camera) |
+| Home role, assistant, screen pinning, dedicated mode, rest screen | **not verified on a real device** |
+
+Realistic minimum today: **Android 8.0+** with an up-to-date Android System WebView, or the
+gecko edition. The app installs on Android 5–7 and explains the problem natively, but the
+site very probably cannot load there.
 
 ## Signing in
 

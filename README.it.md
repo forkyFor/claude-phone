@@ -74,7 +74,7 @@ consenti l'installazione, aprilo e segui la guida.
 | Edizione | Android | Motore web | Dimensione APK |
 |---|---|---|---|
 | **lite** | 5.0+ | l'Android System WebView del telefono | circa 0,1 MB (release firmata), circa 1 MB (debug) |
-| **gecko** | 8.0+ | WebView **oppure** GeckoView incluso (il motore di Firefox), selezionabile dal menu del proprietario | grande: vedi la pagina della release (il solo motore supera i 100 MB) |
+| **gecko** | 8.0+ | WebView **oppure** GeckoView incluso (il motore di Firefox), selezionabile dal menu del proprietario | grande: 160–200 MB come build di debug |
 
 ## Cosa funziona con cosa
 
@@ -103,8 +103,20 @@ Entrambi i livelli di blocco, come annullarli e cosa fare se qualcosa va storto:
 La tabella completa, come è stata misurata e come aggiungere il tuo telefono con una pull
 request: **[docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)**.
 
-<!-- STATUS:BEGIN -->
-<!-- STATUS:END -->
+**Stato al 16 novembre 2026, onestamente:**
+
+| | |
+|---|---|
+| Build in CI, 12 test unitari, lint | ✔ verificato (GitHub Actions verde) |
+| Si installa e parte su Android 5.0 → 15 | ✔ verificato **solo su emulatore** |
+| Guida iniziale, PIN, menu del proprietario, schermate di errore native | ✔ verificato **solo su emulatore** (tocchi automatici, non a occhio) |
+| La pagina di accesso ufficiale viene disegnata | ✔ su emulatore con **GeckoView 160 (Android 8.0+)** e **WebView 83** · ✘ WebView ≤ 74 · ✘ Android ≤ 7.0 (certificato non attendibile) |
+| Accesso, chat, voce, fotocamera, file, condivisione, download | **non verificato su dispositivo reale** (le prove non hanno account, microfono né fotocamera) |
+| Ruolo Home, assistente, fissaggio schermo, modalità dedicata, schermata di riposo | **non verificato su dispositivo reale** |
+
+Minimo realistico oggi: **Android 8.0+** con Android System WebView aggiornato, oppure
+l'edizione gecko. L'app si installa su Android 5–7 e spiega il problema con una schermata
+nativa, ma lì il sito molto probabilmente non può caricarsi.
 
 ## Accesso all'account
 

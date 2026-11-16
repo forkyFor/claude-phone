@@ -27,7 +27,7 @@ Apri la pagina **Releases** del progetto nel browser del telefono:
 | Il nome del file contiene | Per | Dimensione |
 |---|---|---|
 | `lite` | Qualsiasi telefono con Android 5.0 o successivo. **Comincia da questo.** | ben sotto 1 MB (release firmata) |
-| `gecko-arm64-v8a` | Android 8.0+, telefoni a 64 bit (quasi tutti dal 2017 in poi), quando l'edizione lite dice che il motore web è troppo vecchio | grande (circa 100 MB o più) |
+| `gecko-arm64-v8a` | Android 8.0+, telefoni a 64 bit (quasi tutti dal 2017 in poi), quando l'edizione lite dice che il motore web è troppo vecchio | grande (160–200 MB) |
 | `gecko-armeabi-v7a` | Android 8.0+, telefoni a 32 bit | grande |
 
 Se il nome del file finisce con `-debug`, leggi [Build di debug](#build-di-debug) più sotto.

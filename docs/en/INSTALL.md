@@ -26,7 +26,7 @@ Open the project's **Releases** page in the phone's browser:
 | File name contains | For | Size |
 |---|---|---|
 | `lite` | Any phone with Android 5.0 or newer. **Start with this one.** | well under 1 MB (signed release) |
-| `gecko-arm64-v8a` | Android 8.0+, 64-bit phones (most phones from 2017 on), when the lite edition says the web engine is too old | large (about 100 MB or more) |
+| `gecko-arm64-v8a` | Android 8.0+, 64-bit phones (most phones from 2017 on), when the lite edition says the web engine is too old | large (160–200 MB) |
 | `gecko-armeabi-v7a` | Android 8.0+, 32-bit phones | large |
 
 If the file name ends in `-debug`, read [Debug builds](#debug-builds) below.
