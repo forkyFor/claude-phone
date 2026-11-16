@@ -2,7 +2,7 @@
 <!-- To add a language: copy this file to res/values-xx/strings.xml and translate every entry. -->
 <resources>
     <string name="disclaimer">Progetto open source indipendente. Non affiliato, approvato né supportato da Anthropic. “Claude” è un marchio di Anthropic. Questa app mostra soltanto il sito ufficiale claude.ai.</string>
-    <string name="admin_description">Permette al proprietario di bloccare il telefono su claude-phone (modalità dedicata).</string>
+    <string name="admin_description">Permette al proprietario di bloccare il telefono su OldPhoneClaude (modalità dedicata).</string>
     <string name="bar_new_chat">Nuova chat</string>
     <string name="bar_projects">Progetti</string>
     <string name="bar_mic">Parla</string>
@@ -103,7 +103,7 @@
     <string name="btn_mode_home">Usala come schermata Home</string>
     <string name="btn_mode_app">Usala come una normale app</string>
     <string name="setup_mode_more">Blocchi più forti (fissaggio schermo, modalità dedicata) sono nel menu del proprietario e nella guida del progetto.</string>
-    <string name="setup_home_manual">Apri le impostazioni di Android → App → App predefinite → App Home, e scegli claude-phone.</string>
+    <string name="setup_home_manual">Apri le impostazioni di Android → App → App predefinite → App Home, e scegli OldPhoneClaude.</string>
     <string name="setup_signin_title">Accedi</string>
     <string name="setup_signin_body">Ora arriva la pagina di accesso ufficiale di Claude. Scegli “Continua con l’email”: l’accesso con Google di solito viene rifiutato dentro app come questa.</string>
     <string name="setup_signin_tips">Da sapere: il pulsante grande ti ascolta. Tienilo premuto 3 secondi per aprire il menu del proprietario (serve il PIN).</string>
@@ -142,7 +142,7 @@
     <string name="owner_read">Leggi le risposte ad alta voce (pulsante Leggi)</string>
     <string name="owner_read_help">Usa la sintesi vocale del telefono. Fragile per lo stesso motivo; selezionare il testo nella pagina e toccare Leggi funziona sempre.</string>
     <string name="owner_assistant">Impostazioni dell’app assistente</string>
-    <string name="owner_assistant_help">Scegli claude-phone come app assistente digitale e il gesto dell’assistente del telefono (pressione lunga su Home, o tasto di accensione su alcuni telefoni) avvia l’ascolto. Non esiste un “Ehi Claude” sempre attivo: il telefono non ascolta mai a schermo spento.</string>
+    <string name="owner_assistant_help">Scegli OldPhoneClaude come app assistente digitale e il gesto dell’assistente del telefono (pressione lunga su Home, o tasto di accensione su alcuni telefoni) avvia l’ascolto. Non esiste un “Ehi Claude” sempre attivo: il telefono non ascolta mai a schermo spento.</string>
     <string name="owner_sec_display">Schermo</string>
     <string name="owner_keep_on">Tieni lo schermo acceso in carica</string>
     <string name="owner_rest">Schermata di riposo scura con orologio mobile</string>
@@ -169,7 +169,7 @@
     <string name="owner_updates_locked">Disattiva prima la modalità dedicata, oppure visita %1$s/releases da un altro dispositivo.</string>
     <string name="owner_updates_help">L’app non controlla né scarica mai nulla da sola.</string>
     <string name="owner_change_pin">Cambia il PIN del proprietario</string>
-    <string name="owner_about">claude-phone %1$s · Licenza Apache 2.0 · sorgente: %2$s\nNessuna analitica, nessuna pubblicità, nessun server dell’autore. Nessuna API di Anthropic e nessuna chiave API: usi il tuo account sul sito ufficiale.</string>
+    <string name="owner_about">OldPhoneClaude %1$s · Licenza Apache 2.0 · sorgente: %2$s\nNessuna analitica, nessuna pubblicità, nessun server dell’autore. Nessuna API di Anthropic e nessuna chiave API: usi il tuo account sul sito ufficiale.</string>
     <string name="setup_engine_checking">Controllo il motore web di questo telefono…</string>
     <string name="setup_engine_steps">Cosa fare: 1. Tocca “Aggiorna il motore web”. 2. Nello store tocca Aggiorna e attendi la fine. 3. Fai lo stesso con Chrome. 4. Torna qui: il controllo riparte da solo.</string>
     <string name="btn_update_chrome">Aggiorna anche Chrome</string>

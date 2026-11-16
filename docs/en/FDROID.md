@@ -48,7 +48,7 @@ Categories:
 License: Apache-2.0
 SourceCode: https://github.com/forkyFor/claude-phone
 IssueTracker: https://github.com/forkyFor/claude-phone/issues
-AutoName: claude-phone
+AutoName: OldPhoneClaude
 AntiFeatures:
   NonFreeNet:
     en-US: Only works with the proprietary claude.ai service and an account there.

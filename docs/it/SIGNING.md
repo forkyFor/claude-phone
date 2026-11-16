@@ -77,4 +77,4 @@ quattro secret:
 - Il file della chiave viene scritto nella cartella temporanea del runner solo per la durata
   della build e cancellato in un passo `always()`.
 - Per verificare un APK scaricato, su un computer con gli strumenti Android:
-  `apksigner verify --print-certs claude-phone-x.y.z-lite.apk`.
+  `apksigner verify --print-certs OldPhoneClaude-x.y.z-lite.apk`.

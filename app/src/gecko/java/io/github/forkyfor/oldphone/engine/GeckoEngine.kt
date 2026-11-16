@@ -354,7 +354,7 @@ class GeckoEngine(private val activity: Activity, private val host: EngineHost) 
     override fun describe() = "GeckoView ${version()}"
 
     companion object {
-        private const val TAG = "claude-phone"
+        private const val TAG = "OldPhoneClaude"
         private var sharedRuntime: GeckoRuntime? = null
 
         fun version(): String = org.mozilla.geckoview.BuildConfig.MOZ_APP_VERSION

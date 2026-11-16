@@ -1259,7 +1259,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     }
 
     companion object {
-        private const val TAG = "claude-phone"
+        private const val TAG = "OldPhoneClaude"
         const val PROBE_TAG = "OPC_PROBE"
         const val EXTRA_PROBE = "probe"
         const val EXTRA_PROBE_URL = "probe_url"

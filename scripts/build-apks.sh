@@ -21,11 +21,11 @@ fi
 
 rm -rf dist && mkdir -p dist
 ./gradlew --no-daemon ":app:assembleLite${TASK}"
-cp "app/build/outputs/apk/lite/${TYPE}/app-lite-${TYPE}.apk" "dist/claude-phone-${VERSION}-lite${SUFFIX}.apk"
+cp "app/build/outputs/apk/lite/${TYPE}/app-lite-${TYPE}.apk" "dist/OldPhoneClaude-${VERSION}-lite${SUFFIX}.apk"
 
 for ABI in ${GECKO_ABIS}; do
   ./gradlew --no-daemon ":app:assembleGecko${TASK}" "-Pabi=${ABI}"
-  cp "app/build/outputs/apk/gecko/${TYPE}/app-gecko-${TYPE}.apk" "dist/claude-phone-${VERSION}-gecko-${ABI}${SUFFIX}.apk"
+  cp "app/build/outputs/apk/gecko/${TYPE}/app-gecko-${TYPE}.apk" "dist/OldPhoneClaude-${VERSION}-gecko-${ABI}${SUFFIX}.apk"
 done
 
 (cd dist && sha256sum ./*.apk | sed 's# \./# #' > SHA256SUMS.txt)

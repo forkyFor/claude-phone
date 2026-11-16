@@ -1,4 +1,4 @@
-claude-phone turns an old Android phone into an always-on device for Claude. It is a dedicated browser for the official claude.ai website with the extras a single-purpose device needs.
+OldPhoneClaude turns an old Android phone into an always-on device for Claude. It is a dedicated browser for the official claude.ai website with the extras a single-purpose device needs.
 
 <b>Independent project. Not affiliated with, endorsed or supported by Anthropic.</b> You need your own Claude account and sign in on the official page. No API key is used.
 

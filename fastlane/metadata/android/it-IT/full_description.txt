@@ -1,4 +1,4 @@
-claude-phone trasforma un vecchio telefono Android in un dispositivo sempre acceso per Claude. È un browser dedicato al sito ufficiale claude.ai, con le funzioni che servono a un dispositivo monouso.
+OldPhoneClaude trasforma un vecchio telefono Android in un dispositivo sempre acceso per Claude. È un browser dedicato al sito ufficiale claude.ai, con le funzioni che servono a un dispositivo monouso.
 
 <b>Progetto indipendente. Non affiliato, approvato né supportato da Anthropic.</b> Serve un proprio account Claude e l'accesso avviene nella pagina ufficiale. Non usa alcuna chiave API.
 

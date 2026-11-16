@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "claude-phone page tools",
+  "name": "OldPhoneClaude page tools",
   "description": "Built-in helper so the GeckoView engine can run the three page tools in lib.js. Never installed from the network.",
   "version": "1.0",
   "browser_specific_settings": { "gecko": { "id": "pagetools@oldphone.invalid" } },

@@ -4,7 +4,7 @@
 
 No computer and no developer account are needed. Everything happens on the old phone.
 
-> claude-phone is an independent project, not affiliated with Anthropic. You need your own
+> OldPhoneClaude is an independent project, not affiliated with Anthropic. You need your own
 > Claude account. No API key is needed or used.
 
 ## Before you start
@@ -64,7 +64,7 @@ Choose **Continue with email** on the Claude page and follow its instructions.
   embedded web views; that is Google's rule and this app does not work around it. Use the
   email option, even if your account was created with Google: use the same email address.
 - If Claude sends you a **link** by email: open the email on the old phone and touch the
-  link, then choose claude-phone if Android asks which app to use. If Android does not
+  link, then choose OldPhoneClaude if Android asks which app to use. If Android does not
   ask, copy the link (touch and hold it → *Copy link*), then in the app keep the microphone
   button pressed for 3 seconds → enter your PIN → **Paste a sign-in link**.
 - If Claude shows a **code** to type instead, type it in the page.

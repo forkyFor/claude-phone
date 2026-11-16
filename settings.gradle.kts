@@ -16,5 +16,5 @@ dependencyResolutionManagement {
         }
     }
 }
-rootProject.name = "claude-phone"
+rootProject.name = "OldPhoneClaude"
 include(":app")

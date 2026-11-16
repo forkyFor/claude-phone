@@ -77,4 +77,4 @@ four secrets:
 - The key file is written to the runner's temporary folder for the duration of the build and
   deleted in an `always()` step.
 - Verifying a downloaded APK on a computer with the Android build tools:
-  `apksigner verify --print-certs claude-phone-x.y.z-lite.apk`.
+  `apksigner verify --print-certs OldPhoneClaude-x.y.z-lite.apk`.

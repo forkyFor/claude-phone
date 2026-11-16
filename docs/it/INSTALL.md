@@ -4,7 +4,7 @@
 
 Non servono né un computer né un account sviluppatore. Si fa tutto dal vecchio telefono.
 
-> claude-phone è un progetto indipendente, non affiliato ad Anthropic. Serve un tuo
+> OldPhoneClaude è un progetto indipendente, non affiliato ad Anthropic. Serve un tuo
 > account Claude. Non serve e non viene usata alcuna chiave API.
 
 ## Prima di cominciare
@@ -65,7 +65,7 @@ Nella pagina di Claude scegli **Continua con l'email** e segui le istruzioni.
   l'accesso dalle viste web incorporate; è una regola di Google e l'app non la aggira. Usa
   l'opzione email, anche se l'account è nato con Google: usa lo stesso indirizzo.
 - Se Claude ti manda un **link** via email: apri l'email sul vecchio telefono e tocca il
-  link, poi scegli claude-phone se Android chiede con quale app aprirlo. Se Android non lo
+  link, poi scegli OldPhoneClaude se Android chiede con quale app aprirlo. Se Android non lo
   chiede, copia il link (tieni premuto → *Copia link*), poi nell'app tieni premuto il
   pulsante del microfono per 3 secondi → inserisci il PIN → **Incolla un link di accesso**.
 - Se invece Claude mostra un **codice** da digitare, scrivilo nella pagina.
