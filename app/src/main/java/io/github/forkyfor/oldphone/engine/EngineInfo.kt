@@ -8,11 +8,13 @@ import android.webkit.WebView
 /** Finds out which system WebView is installed, without creating one when possible. */
 object EngineInfo {
     /**
-     * Below this Chromium major the app warns before loading the site. It is a warning, not a
-     * block: the real safety net is the blank-page check after loading. See docs/COMPATIBILITY.md
-     * for how this number was chosen and what was (not) verified.
+     * Below this Chromium major the app warns before loading the site ("Try anyway" stays
+     * available). Chosen from the emulator probe in docs/COMPATIBILITY.md: WebView 83 is the
+     * oldest one seen rendering the sign-in page, while 74 and older cannot even run the
+     * site's bot check (JavaScript syntax error). What the site needs after sign-in was not
+     * measured; the blank-page check after loading is the real safety net.
      */
-    const val MIN_WEBVIEW_MAJOR = 111
+    const val MIN_WEBVIEW_MAJOR = 83
 
     class WebViewInfo(val packageName: String?, val version: String?, val major: Int) {
         val present get() = major > 0 || version != null

@@ -47,7 +47,7 @@
     <string name="err_network_fix">Controlla che il Wi-Fi sia acceso e connesso. La pagina si ricarica da sola quando torna la rete.</string>
     <string name="err_tls_title">Connessione sicura non riuscita</string>
     <string name="err_tls_cause">Il telefono non è riuscito a verificare il certificato di sicurezza del sito.</string>
-    <string name="err_tls_fix">Sui telefoni vecchi di solito significa data e ora sbagliate, o un motore web troppo vecchio. Imposta la data, poi aggiorna il motore web.</string>
+    <string name="err_tls_fix">Controlla prima data e ora. Se sono giuste: Android 7.0 e precedenti non conoscono le autorità di certificazione usate dai siti di oggi, e il motore web del telefono dipende da Android per questo. Su Android 8 o successivi, aggiorna il motore web o usa l\'edizione gecko.</string>
     <string name="err_old_title">Il motore web è troppo vecchio</string>
     <string name="err_old_cause">Il sito di Claude richiede un motore di navigazione recente, e quello di questo telefono (Android System WebView) è più vecchio del più vecchio che risulta funzionare.</string>
     <string name="err_old_fix">Cosa fare: apri lo store delle app, cerca “Android System WebView” e aggiornalo. Se non viene proposta una versione più nuova, questa versione di Android non può far funzionare il sito con questo motore.</string>

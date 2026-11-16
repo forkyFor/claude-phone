@@ -48,7 +48,7 @@
     <string name="err_network_fix">Check that Wi-Fi is on and connected. The page reloads by itself when the network is back.</string>
     <string name="err_tls_title">Secure connection failed</string>
     <string name="err_tls_cause">The phone could not verify the site’s security certificate.</string>
-    <string name="err_tls_fix">On old phones this usually means a wrong date and time, or a web engine that is too old. Set the date, then update the web engine.</string>
+    <string name="err_tls_fix">First check the date and time. If they are right: Android 7.0 and older do not know the certificate authorities used by websites today, and the web engine of the phone relies on Android for that. On Android 8 or newer, update the web engine or use the gecko edition.</string>
     <string name="err_old_title">The web engine is too old</string>
     <string name="err_old_cause">Claude’s site needs a recent browser engine, and the one on this phone (Android System WebView) is older than the oldest one known to work.</string>
     <string name="err_old_fix">What to do: open your app store, search “Android System WebView” and update it. If no newer version is offered, this Android version cannot run the site with this engine.</string>
