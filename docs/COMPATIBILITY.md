@@ -133,7 +133,7 @@ Only write what you actually tried.
 | Screen pinning, dedicated mode (device owner) | Not verified on any device |
 | Rest screen, dimming, network recovery | Not verified |
 | TalkBack | Labels and actions are set in code; not tested with TalkBack running |
-| Release workflow (tag → GitHub Release) | Not run: no tag was pushed |
+| Release workflow (tag → GitHub Release) | **Verified**: v0.1.0 published with three debug APKs and `SHA256SUMS.txt` |
 
 ---
 
