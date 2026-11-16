@@ -18,7 +18,9 @@ comodino.
 - Mostra il **sito ufficiale claude.ai** a schermo intero (chat, progetti, tutto ciò che il
   tuo account ha in un browser).
 - Una sola barra nativa discreta con quattro azioni: **Nuova chat**, **Progetti**, un grande
-  **Microfono**, **Fotocamera**. Si nasconde mentre scrivi o leggi.
+  **Microfono**, **Fotocamera**, più un pulsante **App** che apre le applicazioni installate
+  e le impostazioni del telefono (disattivabile dal menu del proprietario). Si nasconde
+  mentre scrivi o leggi.
 - Può essere la **schermata Home** e l'**app assistente** del telefono: il tasto Home e il
   gesto dell'assistente portano sempre a Claude; riparte dopo un riavvio.
 - **Dettatura** con il riconoscimento vocale del telefono, tre comandi a voce ("nuova chat",

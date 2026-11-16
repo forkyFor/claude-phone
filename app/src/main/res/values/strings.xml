@@ -177,6 +177,11 @@
     <string name="btn_get_gecko">Download the gecko edition</string>
     <string name="btn_use_gecko">Use the built-in GeckoView engine</string>
     <string name="btn_check_again">Check again</string>
+    <string name="bar_apps">Apps</string>
+    <string name="apps_title">Apps</string>
+    <string name="apps_settings">Phone settings</string>
+    <string name="owner_show_apps">Show the Apps button on the bar</string>
+    <string name="owner_show_apps_help">Opens the list of installed apps and the phone settings without the PIN. Turn it off if nobody should leave Claude. It is always hidden in dedicated mode.</string>
     <plurals name="attach_ready">
         <item quantity="one">%d file is ready. Touch the attach (+) button in the page to add it.</item>
         <item quantity="other">%d files are ready. Touch the attach (+) button in the page to add them.</item>

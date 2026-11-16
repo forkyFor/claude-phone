@@ -176,6 +176,11 @@
     <string name="btn_get_gecko">Scarica l’edizione gecko</string>
     <string name="btn_use_gecko">Usa il motore GeckoView incluso</string>
     <string name="btn_check_again">Controlla di nuovo</string>
+    <string name="bar_apps">App</string>
+    <string name="apps_title">Applicazioni</string>
+    <string name="apps_settings">Impostazioni del telefono</string>
+    <string name="owner_show_apps">Mostra il pulsante App sulla barra</string>
+    <string name="owner_show_apps_help">Apre l’elenco delle app installate e le impostazioni del telefono senza il PIN. Disattivalo se nessuno deve uscire da Claude. In modalità dedicata è sempre nascosto.</string>
     <plurals name="attach_ready">
         <item quantity="one">%d file pronto. Tocca il pulsante allega (+) nella pagina per aggiungerlo.</item>
         <item quantity="many">%d file pronti. Tocca il pulsante allega (+) nella pagina per aggiungerli.</item>

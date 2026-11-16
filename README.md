@@ -17,7 +17,8 @@ phone simply *is* the Claude device on your desk, in the kitchen or next to the 
 - Shows the **official claude.ai site** full screen (chats, projects, everything your
   account has in a browser).
 - One discreet native bar with four actions: **New chat**, **Projects**, a big
-  **Microphone**, **Camera**. It hides while you type or read.
+  **Microphone**, **Camera**, plus an **Apps** button that opens the installed apps and the
+  phone settings (can be switched off in the owner menu). It hides while you type or read.
 - Can be the phone's **Home screen** and **assistant app**: the Home button and the
   assistant gesture always lead to Claude; it starts again after a restart.
 - **Push-to-talk dictation** with the phone's own speech recognition, three spoken commands

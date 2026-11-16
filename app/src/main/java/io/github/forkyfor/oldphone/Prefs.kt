@@ -48,6 +48,11 @@ class Prefs(ctx: Context) {
         get() = bool("read_aloud", false)
         set(v) = put("read_aloud", v)
 
+    /** "Apps" button on the bar: installed apps and phone settings, without the PIN. */
+    var showApps: Boolean
+        get() = bool("show_apps", true)
+        set(v) = put("show_apps", v)
+
     var reduceMotion: Boolean
         get() = bool("reduce_motion", lowEnd)
         set(v) = put("reduce_motion", v)

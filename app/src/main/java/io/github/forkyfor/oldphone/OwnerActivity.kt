@@ -169,6 +169,8 @@ class OwnerActivity : BaseActivity() {
         // ---- home and lock
         col.addView(Ui.section(c, getString(R.string.owner_sec_lock)))
         col.addView(Ui.secondaryButton(c, getString(R.string.owner_home)) { requestHome() })
+        col.addView(Ui.switchRow(c, getString(R.string.owner_show_apps), prefs.showApps) { prefs.showApps = it })
+        col.addView(Ui.body(c, getString(R.string.owner_show_apps_help), muted = true))
         val owner = Kiosk.isDeviceOwner(c)
         val locked = Kiosk.isLocked(c)
         if (!owner) {

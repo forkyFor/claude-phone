@@ -41,6 +41,11 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.HOME" />
         </intent>
+        <!-- The Apps screen lists what the phone's own launcher would list. -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
     </queries>
 
     <application
@@ -106,6 +111,7 @@
 
         <activity android:name=".SetupActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".OwnerActivity" android:exported="false" />
+        <activity android:name=".AppsActivity" android:exported="false" />
 
         <provider
             android:name=".FilesProvider"

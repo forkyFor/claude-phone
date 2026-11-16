@@ -78,6 +78,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     private lateinit var bar: LinearLayout
     private lateinit var micButton: ImageButton
     private lateinit var readButton: TextView
+    private lateinit var appsButton: TextView
     private lateinit var errorHolder: FrameLayout
     private lateinit var rest: RestScreen
 
@@ -165,7 +166,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         if (engine != null && engine?.id != wanted) startEngine(UrlPolicy.HOME_URL)
         engine?.onResume()
         runPendingOwnerAction()
-        readButton.visibility = if (prefs.readAloud) View.VISIBLE else View.INVISIBLE
+        readButton.visibility = if (prefs.readAloud) View.VISIBLE else View.GONE
+        // In dedicated mode other apps cannot be opened at all, so the button would only mislead.
+        val dedicated = Kiosk.isLocked(this) || (prefs.kiosk && Kiosk.isDeviceOwner(this))
+        appsButton.visibility = if (prefs.showApps && !dedicated) View.VISIBLE else View.GONE
         applyBrightness()
         updatePower()
         hideSystemBars()
@@ -457,6 +461,12 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         row.addView(barItem(R.drawable.ic_camera, R.string.bar_camera) { cameraTapped() }, weight())
         readButton = barItem(R.drawable.ic_speaker, R.string.bar_read) { readTapped() }
         row.addView(readButton, weight())
+        // The door to the rest of the phone: installed apps and Android settings.
+        appsButton = barItem(R.drawable.ic_apps, R.string.bar_apps) {
+            startActivity(Intent(this, AppsActivity::class.java))
+            noTransition()
+        }
+        row.addView(appsButton, weight())
         return row
     }
 
