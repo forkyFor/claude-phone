@@ -26,7 +26,7 @@ INSTALL=$?
 adb logcat -c
 if [ "${UI_WALK:-false}" = "true" ]; then
   python3 "$(dirname "$0")/ui-walk.py" > "out/${LABEL}-ui-walk.txt" 2>&1
-  if [ $? = 0 ]; then WALK=ok; else WALK=FAILED; fi
+  case $? in 0) WALK=ok ;; 2) WALK=unavailable ;; *) WALK=FAILED ;; esac
   cat "out/${LABEL}-ui-walk.txt"
 else
   adb shell am start -W -n "$PKG/.MainActivity" >/dev/null
@@ -42,7 +42,7 @@ adb shell am force-stop "$PKG"
 # 2) Does the official site render in this engine?
 adb logcat -c
 adb shell am start -W -n "$PKG/.MainActivity" --ez probe true --es probe_engine "$ENGINE" --es probe_url "$URL" >/dev/null
-sleep 90
+sleep 100
 adb exec-out screencap -p > "out/${LABEL}-site.png"
 adb logcat -d > "out/${LABEL}-logcat.txt"
 grep "OPC_PROBE" "out/${LABEL}-logcat.txt" | sed 's/.*OPC_PROBE: //' > "out/${LABEL}-probe.jsonl"

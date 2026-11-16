@@ -56,10 +56,15 @@ jobs:
           - { api: 21, target: default, gecko: false }
           - { api: 23, target: default, gecko: false }
           - { api: 24, target: default, gecko: false }
+          - { api: 25, target: default, gecko: false }
           - { api: 26, target: default, gecko: true }
+          - { api: 27, target: default, gecko: false }
           - { api: 28, target: default, gecko: true }
+          - { api: 29, target: default, gecko: false }
           - { api: 30, target: google_apis, gecko: true }
-          - { api: 33, target: google_apis, gecko: true }
+          - { api: 31, target: google_apis, gecko: false }
+          - { api: 33, target: google_apis, gecko: false }
+          - { api: 34, target: google_apis, gecko: true }
           - { api: 35, target: google_apis, gecko: true }
     steps:
       - uses: actions/checkout@v4
@@ -113,6 +118,6 @@ jobs:
             echo "##### $(basename "$f" -result.txt)"
             cat "$f"
             walk="${f%-result.txt}-ui-walk.txt"
-            [ -f "$walk" ] && tail -n 3 "$walk"
+            [ -f "$walk" ] && tail -n 2 "$walk" | cut -c1-600
             echo
           done | tee -a "$GITHUB_STEP_SUMMARY"

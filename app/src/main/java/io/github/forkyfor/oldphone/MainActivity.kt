@@ -601,9 +601,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
 
     override fun onPageFinished(url: String) {
         progress.visibility = View.GONE
+        if (probe) Log.i(PROBE_TAG, JSONObject().put("event", "finished").put("http", probeHttp).toString())
         if (UrlPolicy.isSite(Uri.parse(url).host) && problem == null) {
             handler.removeCallbacks(blankCheck)
-            blankChecksLeft = 2
+            blankChecksLeft = if (probe) 5 else 2
             handler.postDelayed(blankCheck, BLANK_CHECK_MS)
         }
     }
@@ -704,7 +705,11 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
                 }
                 // A page that finished loading but shows no text at all is the "white page"
                 // an engine that is too old produces. Explain it natively instead.
-                if (o != null && o.optInt("text", 1) == 0 && problem == null) {
+                if (probe) {
+                    // Measurement runs keep sampling so slow engines and bot checks are seen over time.
+                    blankChecksLeft--
+                    if (blankChecksLeft > 0) handler.postDelayed(this, BLANK_CHECK_MS)
+                } else if (o != null && o.optInt("text", 1) == 0 && problem == null) {
                     blankChecksLeft--
                     if (blankChecksLeft > 0) handler.postDelayed(this, BLANK_CHECK_MS) else showProblem(Problem.BLANK, "")
                 }

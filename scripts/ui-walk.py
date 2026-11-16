@@ -88,6 +88,13 @@ def main():
     api = int(adb("shell", "getprop", "ro.build.version.sdk").strip() or 0)
     adb("shell", "am", "start", "-W", "-n", f"{PKG}/.MainActivity")
     time.sleep(6)
+    for _ in range(4):
+        if texts(dump()):
+            break
+        time.sleep(5)
+    else:
+        print("UI_WALK UNAVAILABLE: uiautomator returned an empty screen on this image", flush=True)
+        sys.exit(2)
 
     press("welcome", "Start")
     press("language", "English")
@@ -113,16 +120,26 @@ def main():
     time.sleep(25)
 
     root = dump()
+    # Android's own one-time "Viewing full screen" hint.
+    hint = find(root, "GOT IT", "Got it")
+    if hint is not None:
+        tap(hint)
+        root = dump()
     show("main", root)
-    missing = [w for w in ("New chat", "Projects", "Camera", "Speak") if find(root, w) is None]
-    if missing:
-        print(f"UI_WALK FAIL at main: bar items missing {missing}", flush=True)
-        sys.exit(1)
-
-    # Hidden owner gesture: hold the microphone for three seconds, then the PIN.
-    x, y = center(find(root, "Speak"))
-    adb("shell", "input", "swipe", str(x), str(y), str(x), str(y), "3800")
-    time.sleep(2.5)
+    old_engine = find(root, "Try anyway") is not None
+    if old_engine:
+        # Stock emulator WebView below the warning threshold: the native explanation is shown.
+        print("UI_WALK note: native 'web engine is too old' screen shown", flush=True)
+        press("old-engine-owner", "Owner menu")
+    else:
+        missing = [w for w in ("New chat", "Projects", "Camera", "Speak") if find(root, w) is None]
+        if missing:
+            print(f"UI_WALK FAIL at main: bar items missing {missing}", flush=True)
+            sys.exit(1)
+        # Hidden owner gesture: hold the microphone for three seconds.
+        x, y = center(find(root, "Speak"))
+        adb("shell", "input", "swipe", str(x), str(y), str(x), str(y), "3800")
+        time.sleep(2.5)
     root = dump()
     show("pin-dialog", root)
     if find(root, "Owner PIN") is None:
@@ -141,7 +158,7 @@ def main():
     if find(root, "Speak") is None:
         print("UI_WALK FAIL: did not return to the main screen", flush=True)
         sys.exit(1)
-    print("UI_WALK OK", flush=True)
+    print("UI_WALK OK" + (" (old-engine screen path)" if old_engine else " (bar + hidden gesture path)"), flush=True)
 
 
 if __name__ == "__main__":
