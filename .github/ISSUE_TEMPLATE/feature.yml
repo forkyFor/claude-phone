@@ -1,0 +1,28 @@
+name: Feature request / Richiesta di funzione
+description: Suggest an improvement. / Proponi un miglioramento.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please read the ground rules in CONTRIBUTING.md first: no API, no touching credentials, no changing the site, no servers.
+        Leggi prima le regole di base in CONTRIBUTING.md: niente API, niente credenziali, niente modifiche al sito, niente server.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve? / Che problema risolverebbe?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea / La tua idea
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Ground rules / Regole di base
+      options:
+        - label: This respects the ground rules. / Rispetta le regole di base.
+          required: true

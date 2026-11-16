@@ -1,0 +1,13 @@
+OldPhoneClaude
+Copyright 2026 The OldPhoneClaude contributors
+
+Licensed under the Apache License, Version 2.0.
+
+This project is independent and is not affiliated with, endorsed by or supported by
+Anthropic, PBC. "Claude" and "Anthropic" are trademarks of Anthropic, PBC; they are used here
+only to describe what the app opens. The Apache License does not grant any right to those
+trademarks (see section 6 of the license).
+
+The "gecko" edition bundles GeckoView (https://geckoview.dev), copyright Mozilla and
+contributors, licensed under the Mozilla Public License 2.0. Its source code is available at
+https://hg.mozilla.org/releases/mozilla-release.

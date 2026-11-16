@@ -1,0 +1,21 @@
+OldPhoneClaude turns an old Android phone into an always-on device for Claude. It is a dedicated browser for the official claude.ai website with the extras a single-purpose device needs.
+
+<b>Independent project. Not affiliated with, endorsed or supported by Anthropic.</b> You need your own Claude account and sign in on the official page. No API key is used.
+
+<b>What it does</b>
+* Shows the official site full screen, with one native bar: New chat, Projects, Microphone, Camera
+* Can be the Home screen and the assistant app, so the phone always comes back to Claude
+* Push-to-talk dictation with the phone's speech recognition; optional read-aloud
+* Attach photos and files; receive shared text, links, images and PDFs
+* First-run guide in plain language, native error screens instead of blank pages
+* Screen pinning and, for a phone set up with adb, a full dedicated (lock task) mode
+* Dark rest screen with a moving clock for always-plugged-in use
+* Owner menu protected by a PIN you choose
+
+<b>What it does not do</b>
+* It is not an alternative client: it never replaces or restyles the site
+* It never reads, stores or sends cookies, tokens or passwords
+* No analytics, no ads, no server of the author
+* No root and no system modifications
+
+Old phones no longer get security updates: read the safety notes in the project README before leaving one plugged in all day.

@@ -1,0 +1,62 @@
+name: Bug / Malfunzionamento
+description: Something does not work. / Qualcosa non funziona.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Never paste passwords, sign-in links, cookies or private conversations here.
+        Non incollare mai password, link di accesso, cookie o conversazioni private.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened? / Cosa è successo?
+      description: What you did, what you expected, what you saw. / Cosa hai fatto, cosa ti aspettavi, cosa hai visto.
+    validations:
+      required: true
+  - type: input
+    id: phone
+    attributes:
+      label: Phone model / Modello del telefono
+      placeholder: Samsung Galaxy S7 (SM-G930F)
+    validations:
+      required: true
+  - type: input
+    id: android
+    attributes:
+      label: Android version / Versione di Android
+      placeholder: "8.0"
+    validations:
+      required: true
+  - type: input
+    id: app
+    attributes:
+      label: App version and edition / Versione ed edizione dell'app
+      description: Owner menu → bottom. / Menu del proprietario → in fondo.
+      placeholder: 0.1.0 lite
+    validations:
+      required: true
+  - type: input
+    id: engine
+    attributes:
+      label: Web engine / Motore web
+      description: Owner menu → Web engine. / Menu del proprietario → Motore web.
+      placeholder: Android System WebView 138.0.7204.179
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: How is the app used? / Come viene usata l'app?
+      options:
+        - Normal app / App normale
+        - Home screen / Schermata Home
+        - Screen pinning / Fissaggio schermo
+        - Dedicated mode (device owner) / Modalità dedicata
+    validations:
+      required: true
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else? / Altro?
+      description: Screenshots help (hide private content). / Gli screenshot aiutano (nascondi i contenuti privati).

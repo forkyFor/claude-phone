@@ -208,7 +208,9 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     override fun onUserInteraction() {
         super.onUserInteraction()
         if (!::root.isInitialized) return
-        wake()
+        // While the rest screen is up, its own tap handler wakes the phone, so that the
+        // waking touch is not passed on to the page underneath.
+        if (!rest.showing) wake()
         scheduleIdle()
     }
 

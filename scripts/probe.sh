@@ -22,12 +22,21 @@ adb uninstall "$PKG" >/dev/null 2>&1
 if [ "$API" -ge 23 ]; then adb install -g "$APK"; else adb install "$APK"; fi
 INSTALL=$?
 
-# 1) Does the app start and show its first-run guide?
+# 1) Does the app start, and does the first-run guide work when really tapped through?
 adb logcat -c
-adb shell am start -W -n "$PKG/.MainActivity" >/dev/null
-sleep 8
+if [ "${UI_WALK:-false}" = "true" ]; then
+  python3 "$(dirname "$0")/ui-walk.py" > "out/${LABEL}-ui-walk.txt" 2>&1
+  if [ $? = 0 ]; then WALK=ok; else WALK=FAILED; fi
+  cat "out/${LABEL}-ui-walk.txt"
+else
+  adb shell am start -W -n "$PKG/.MainActivity" >/dev/null
+  sleep 8
+  WALK=skipped
+fi
 adb exec-out screencap -p > "out/${LABEL}-setup.png"
-if adb shell pidof "$PKG" >/dev/null 2>&1 || adb shell ps | grep -q "$PKG"; then START=ok; else START=crashed; fi
+if adb shell ps | grep -q "$PKG"; then START=ok; else START=crashed; fi
+adb logcat -d > "out/${LABEL}-logcat-ui.txt"
+UICRASH=$(grep -c "FATAL EXCEPTION" "out/${LABEL}-logcat-ui.txt")
 adb shell am force-stop "$PKG"
 
 # 2) Does the official site render in this engine?
@@ -40,16 +49,20 @@ grep "OPC_PROBE" "out/${LABEL}-logcat.txt" | sed 's/.*OPC_PROBE: //' > "out/${LA
 CRASH=$(grep -c "FATAL EXCEPTION" "out/${LABEL}-logcat.txt")
 
 echo "=== PROBE RESULT ${LABEL} ==="
-echo "android=${REL} api=${API} stock_webview=${WV:-unknown} engine=${ENGINE} install=${INSTALL} start=${START} fatal_exceptions=${CRASH} url=${URL}"
-cat "out/${LABEL}-probe.jsonl"
+CRASH=$((CRASH + UICRASH))
+{
+  echo "android=${REL} api=${API} stock_webview=${WV:-unknown} engine=${ENGINE} install=${INSTALL} start=${START} ui_walk=${WALK} fatal_exceptions=${CRASH} url=${URL}"
+  cat "out/${LABEL}-probe.jsonl"
+} > "out/${LABEL}-result.txt"
+cat "out/${LABEL}-result.txt"
 echo "=== END ${LABEL} ==="
 
 {
   echo "### ${LABEL}"
-  echo "Android ${REL} (API ${API}) · stock WebView \`${WV:-unknown}\` · engine \`${ENGINE}\` · install=${INSTALL} · app start=${START} · fatal exceptions=${CRASH}"
+  echo "Android ${REL} (API ${API}) · stock WebView \`${WV:-unknown}\` · engine \`${ENGINE}\` · install=${INSTALL} · app start=${START} · guide walk=${WALK} · fatal exceptions=${CRASH}"
   echo '```json'
   cat "out/${LABEL}-probe.jsonl"
   echo '```'
 } >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
 
-[ "$INSTALL" = 0 ] && [ "$START" = ok ] && [ "$CRASH" = 0 ]
+[ "$INSTALL" = 0 ] && [ "$START" = ok ] && [ "$CRASH" = 0 ] && [ "$WALK" != FAILED ]

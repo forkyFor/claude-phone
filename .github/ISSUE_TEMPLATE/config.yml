@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security problem / Problema di sicurezza
+    url: https://github.com/forkyFor/claude-phone/security/advisories/new
+    about: Please report security problems privately. / Segnala i problemi di sicurezza in privato.
+  - name: Problem with Claude itself / Problema con Claude
+    url: https://support.claude.com
+    about: This project only shows the official site. Account, billing and answers are Anthropic's. / Questo progetto mostra solo il sito ufficiale.

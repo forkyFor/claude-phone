@@ -1,0 +1,67 @@
+name: Device report / Nuovo dispositivo provato
+description: Tell us how it runs on your phone, working or not. / Dicci come va sul tuo telefono, che funzioni o no.
+labels: [device-report]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you! Reports from real phones are what the compatibility table is made of.
+        Grazie! La tabella di compatibilità è fatta di segnalazioni da telefoni veri.
+  - type: input
+    id: phone
+    attributes:
+      label: Phone model and year / Modello e anno
+      placeholder: Motorola Moto G5 (2017)
+    validations:
+      required: true
+  - type: input
+    id: android
+    attributes:
+      label: Android version (and ROM if not stock) / Versione di Android (e ROM se non originale)
+      placeholder: "7.0 stock"
+    validations:
+      required: true
+  - type: input
+    id: ram
+    attributes:
+      label: RAM
+      placeholder: 2 GB
+  - type: input
+    id: app
+    attributes:
+      label: App version and edition / Versione ed edizione dell'app
+      placeholder: 0.1.0 lite
+    validations:
+      required: true
+  - type: input
+    id: engine
+    attributes:
+      label: Web engine and version / Motore web e versione
+      description: Owner menu → Web engine. / Menu del proprietario → Motore web.
+    validations:
+      required: true
+  - type: checkboxes
+    id: works
+    attributes:
+      label: What works? / Cosa funziona?
+      description: Tick only what you actually tried and saw working. / Spunta solo ciò che hai provato e visto funzionare.
+      options:
+        - label: Site loads and sign-in by email works / Il sito si carica e l'accesso via email funziona
+        - label: Sign-in with Google works / L'accesso con Google funziona
+        - label: Writing and receiving messages / Scrivere e ricevere messaggi
+        - label: Still signed in after restarting the phone / Ancora connesso dopo il riavvio
+        - label: Voice button inside the page / Pulsante voce dentro la pagina
+        - label: Native microphone button (dictation) / Pulsante microfono nativo (dettatura)
+        - label: Attach a photo from the camera / Allegare una foto dalla fotocamera
+        - label: Attach a file / Allegare un file
+        - label: Share from another app / Condividere da un'altra app
+        - label: Home screen mode / Modalità schermata Home
+        - label: Screen pinning / Fissaggio schermo
+        - label: Dedicated mode (adb) / Modalità dedicata (adb)
+        - label: Rest screen and waking / Schermata di riposo e riattivazione
+  - type: textarea
+    id: notes
+    attributes:
+      label: What does not work, and how fast is it? / Cosa non funziona, e quanto è veloce?
+    validations:
+      required: true

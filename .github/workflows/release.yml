@@ -84,6 +84,13 @@ jobs:
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/*.apk dist/SHA256SUMS.txt \
-            --title "OldPhoneClaude ${GITHUB_REF_NAME#v}" --notes-file notes.md
+          # Works whether the tag was pushed with git or created from the GitHub website.
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/*.apk dist/SHA256SUMS.txt --clobber
+            gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
+          else
+            gh release create "$GITHUB_REF_NAME" dist/*.apk dist/SHA256SUMS.txt \
+              --title "OldPhoneClaude ${GITHUB_REF_NAME#v}" --notes-file notes.md
+          fi

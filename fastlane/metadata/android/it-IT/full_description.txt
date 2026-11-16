@@ -1,0 +1,21 @@
+OldPhoneClaude trasforma un vecchio telefono Android in un dispositivo sempre acceso per Claude. È un browser dedicato al sito ufficiale claude.ai, con le funzioni che servono a un dispositivo monouso.
+
+<b>Progetto indipendente. Non affiliato, approvato né supportato da Anthropic.</b> Serve un proprio account Claude e l'accesso avviene nella pagina ufficiale. Non usa alcuna chiave API.
+
+<b>Cosa fa</b>
+* Mostra il sito ufficiale a schermo intero, con una sola barra nativa: Nuova chat, Progetti, Microfono, Fotocamera
+* Può essere la schermata Home e l'app assistente, così il telefono torna sempre a Claude
+* Dettatura con il riconoscimento vocale del telefono; lettura ad alta voce opzionale
+* Allega foto e file; riceve testo, link, immagini e PDF condivisi
+* Primo avvio guidato in linguaggio semplice, schermate di errore native al posto delle pagine bianche
+* Fissaggio schermo e, per un telefono preparato con adb, modalità dedicata completa
+* Schermata di riposo scura con orologio mobile per l'uso sempre in carica
+* Menu del proprietario protetto da un PIN scelto da te
+
+<b>Cosa non fa</b>
+* Non è un client alternativo: non sostituisce né modifica il sito
+* Non legge, salva né invia cookie, token o password
+* Nessuna analitica, pubblicità o server dell'autore
+* Niente root né modifiche di sistema
+
+I telefoni vecchi non ricevono più aggiornamenti di sicurezza: leggi le note di sicurezza nel README prima di lasciarne uno sempre in carica.

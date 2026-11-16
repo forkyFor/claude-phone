@@ -17,6 +17,7 @@ on:
     paths:
       - .github/workflows/emulator.yml
       - scripts/probe.sh
+      - scripts/ui-walk.py
 
 permissions:
   contents: read
@@ -86,7 +87,7 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
           script: |
-            scripts/probe.sh apks/lite.apk webview api${{ matrix.api }}-webview || echo "PROBE_FAILED webview" >> out/failed.txt
+            UI_WALK=true scripts/probe.sh apks/lite.apk webview api${{ matrix.api }}-webview || echo "PROBE_FAILED webview" >> out/failed.txt
             if [ "$GECKO" = "true" ]; then scripts/probe.sh apks/gecko.apk gecko api${{ matrix.api }}-gecko || echo "PROBE_FAILED gecko" >> out/failed.txt; fi
             if [ -f out/failed.txt ]; then cat out/failed.txt; exit 1; fi
       - uses: actions/upload-artifact@v4
@@ -95,3 +96,23 @@ jobs:
           name: probe-api${{ matrix.api }}
           path: out
           retention-days: 14
+
+  # One place to read every result.
+  summary:
+    needs: probe
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: probe-api*
+          path: results
+      - name: All results
+        run: |
+          for f in $(ls results/*/*-result.txt | sort -V); do
+            echo "##### $(basename "$f" -result.txt)"
+            cat "$f"
+            walk="${f%-result.txt}-ui-walk.txt"
+            [ -f "$walk" ] && tail -n 3 "$walk"
+            echo
+          done | tee -a "$GITHUB_STEP_SUMMARY"
