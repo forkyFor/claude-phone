@@ -11,6 +11,7 @@ recogniser had returned it (debug builds only, extra "probe_say"). Checks:
 Exit code 0 = all passed.
 """
 import re
+import shlex
 import subprocess
 import sys
 import time
@@ -53,14 +54,17 @@ def tap(n):
 
 
 def say(sentence, wait=5):
-    adb("shell", "am", "start", "-n", f"{PKG}/.MainActivity", "--ez", "probe", "true", "--es", "probe_say", sentence)
+    # adb joins the arguments with spaces for the device shell: the sentence must be quoted.
+    adb("shell", "am", "start", "-n", f"{PKG}/.MainActivity", "--ez", "probe", "true", "--es", "probe_say", shlex.quote(sentence))
     time.sleep(wait)
     return dump()
 
 
-def check(name, ok, detail=""):
+def check(name, ok, detail="", root=None):
     results.append(ok)
     print(f"VOICE {'OK  ' if ok else 'FAIL'} {name} {detail}".rstrip(), flush=True)
+    if not ok and root is not None:
+        print("      on screen: " + " | ".join(t for t in texts(root) if t)[:400], flush=True)
 
 
 def top_package():
@@ -74,17 +78,17 @@ def main():
     time.sleep(6)
 
     root = say("voice commands")
-    check("help dialog", any("Voice commands" in t for t in texts(root)))
+    check("help dialog", any("Voice commands" in t for t in texts(root)), root=root)
     ok = node(root, "OK")
     if ok is not None:
         tap(ok)
 
     root = say("what time is it")
-    check("time answer", any(t.startswith("It is ") for t in texts(root)), "| ".join(t for t in texts(root) if t.startswith("It is")))
+    check("time answer", any(t.startswith("It is ") for t in texts(root)), "| ".join(t for t in texts(root) if t.startswith("It is")), root=root)
 
     root = say("call 123 4567", wait=3)
     shown = [t for t in texts(root) if t.startswith("Call") or t == "Phone call"]
-    check("call confirmation with countdown", any(re.match(r"Call \(\d\)", t, re.I) for t in shown), " | ".join(shown))
+    check("call confirmation with countdown", any(re.match(r"Call \(\d\)", t, re.I) for t in shown), " | ".join(shown), root=root)
     cancel = node(root, "Cancel")
     if cancel is not None:
         tap(cancel)
@@ -94,7 +98,9 @@ def main():
 
     say("call 123 4567", wait=12)
     telecom = adb("shell", "dumpsys", "telecom")
-    calling = bool(re.search(r"tel:1234567|1234567", telecom)) or "incall" in top_package().lower() or "dialer" in top_package().lower()
+    registry = adb("shell", "dumpsys", "telephony.registry")
+    top = top_package().lower()
+    calling = ("mCallState=2" in registry or "1234567" in telecom or "incall" in top or "dialer" in top)
     check("countdown places the call", calling, top_package())
     adb("shell", "input", "keyevent", "KEYCODE_ENDCALL")
     time.sleep(3)
