@@ -131,7 +131,8 @@ Only write what you actually tried.
 | Phone voice commands on a device: help, time, call confirmation and countdown, cancel, a real call placed after the countdown, open settings | **Verified on emulators** Android 6.0 → 15 (10 images, 2026-11-17; the sentence is handed over without a microphone, `scripts/voice-walk.py`) · **not verified on a real device** |
 | Contacts lookup, messages, flashlight, volume, calls in dedicated mode | Not verified |
 | Meetings: text of NotebookLM's answer → title/description/summary, note file, project address, store | **Verified** by unit tests |
-| Meetings on a device: screen, record/stop/save, simulated answer, audio deleted after accepting | Emulator check written (`scripts/voice-walk.py`); **not verified on a real device** |
+| Meetings on a device: screen, record/stop/save, simulated answer, suggested title/description, audio deleted after accepting | **Verified on emulators** Android 10 → 15 (2026-11-17; NotebookLM's answer simulated) · **not verified on a real device** |
+| Type button (typed commands) | **Verified on emulators** 7.1, 8.1, 10, 12, 14, 15; on 6.0, 7.0 and 11 the check did not find the button while the site's bot-check page was in front (cause not isolated) · not verified on a real device |
 | Meetings with NotebookLM and a Claude project (share of the audio, project creation, upload) | Not verified: needs a real phone with NotebookLM and a signed-in account |
 | Camera capture, file picker, share-in | Not verified |
 | Downloads | Not verified; WebView limits are by design, see README |
