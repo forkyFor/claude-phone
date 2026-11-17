@@ -79,6 +79,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     private lateinit var micButton: ImageButton
     private lateinit var readButton: TextView
     private lateinit var appsButton: TextView
+    private lateinit var meetingsButton: TextView
+    private var meetingUploadUri: Uri? = null
+    private var meetingUploadId: String? = null
+    private var declinedProject: String? = null
     private lateinit var errorHolder: FrameLayout
     private lateinit var rest: RestScreen
 
@@ -175,6 +179,16 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         // In dedicated mode other apps cannot be opened at all, so the button would only mislead.
         val dedicated = Kiosk.isLocked(this) || (prefs.kiosk && Kiosk.isDeviceOwner(this))
         appsButton.visibility = if (prefs.showApps && !dedicated) View.VISIBLE else View.GONE
+        meetingsButton.visibility = if (meetingsAvailable()) View.VISIBLE else View.GONE
+        meetingsButton.text = getString(if (MeetingRecorderService.recording) R.string.bar_meetings_rec else R.string.bar_meetings)
+        runPendingMeeting()
+        if (prefs.meetingsEnabled && prefs.meetingsLinkPending) {
+            val title = prefs.meetingsProjectTitle.ifBlank { getString(R.string.meeting_project_default) }
+            showBanner(getString(R.string.meeting_link_hint, title), sticky = true, tag = TAG_LINK) {
+                copyToClipboard(title)
+                load(UrlPolicy.PROJECTS_URL)
+            }
+        }
         applyBrightness()
         updatePower()
         hideSystemBars()
@@ -212,7 +226,65 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && ::root.isInitialized) hideSystemBars()
+        if (hasFocus && ::root.isInitialized) {
+            hideSystemBars()
+            // Back from NotebookLM (Home leads here, not to the meetings screen): offer its answer.
+            if (MeetingFlow.clipboardResult(this) != null && bannerTag != TAG_RESULT) {
+                showBanner(getString(R.string.meeting_result_found), sticky = true, tag = TAG_RESULT) { openMeetings(null) }
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------- meetings
+
+    private fun meetingsAvailable() = prefs.meetingsEnabled && Build.VERSION.SDK_INT >= 29
+
+    private fun openMeetings(action: String?) {
+        if (!meetingsAvailable()) {
+            showBanner(getString(R.string.meeting_disabled))
+            return
+        }
+        if (dictation.listening) dictation.cancel()
+        val i = Intent(this, MeetingsActivity::class.java)
+        if (action != null) i.putExtra(MeetingsActivity.EXTRA_ACTION, action)
+        startActivity(i)
+        noTransition()
+    }
+
+    /** A meeting note to add to the Claude project: open the project, the file waits for "Add content". */
+    private fun runPendingMeeting() {
+        val id = pendingMeetingId ?: return
+        pendingMeetingId = null
+        val store = MeetingFlow.store(this)
+        val m = store.load(id) ?: return
+        val file = store.noteFile(m) ?: return
+        if (!file.exists() || prefs.meetingsProjectUrl.isEmpty()) return
+        val uri = FilesProvider.uriFor(this, file)
+        pendingAttachments.remove(meetingUploadUri)
+        pendingAttachments.add(uri)
+        meetingUploadUri = uri
+        meetingUploadId = id
+        copyToClipboard(file.readText())
+        load(prefs.meetingsProjectUrl)
+        showBanner(getString(R.string.meeting_upload_hint), sticky = true, tag = TAG_ATTACH)
+    }
+
+    /** While a project page is shown during linking, offer it as the meetings project. */
+    private fun maybeLinkProject(url: String) {
+        if (!prefs.meetingsEnabled || !prefs.meetingsLinkPending) return
+        val project = ProjectUrl.match(url) ?: return
+        if (project == declinedProject) return
+        declinedProject = project
+        val title = prefs.meetingsProjectTitle.ifBlank { getString(R.string.meeting_project_default) }
+        AlertDialog.Builder(this)
+            .setMessage(getString(R.string.meeting_link_confirm, title))
+            .setPositiveButton(R.string.meeting_link_yes) { _, _ ->
+                prefs.meetingsProjectUrl = project
+                prefs.meetingsLinkPending = false
+                showBanner(getString(R.string.meeting_linked, title))
+            }
+            .setNegativeButton(R.string.btn_not_now, null)
+            .show()
     }
 
     override fun onUserInteraction() {
@@ -246,6 +318,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         // because CI emulators have no microphone. Release builds never read this extra.
         if (BuildConfig.DEBUG && intent.getBooleanExtra(EXTRA_PROBE, false)) {
             intent.getStringExtra(EXTRA_PROBE_SAY)?.let { said -> handler.postDelayed({ onFinal(said) }, 2500L) }
+            if (intent.getBooleanExtra(EXTRA_PROBE_MEETINGS, false)) prefs.meetingsEnabled = true
+            if (intent.hasExtra(MeetingsActivity.EXTRA_PROBE_FAKE) || intent.hasExtra(MeetingsActivity.EXTRA_PROBE_RESULT)) {
+                intent.extras?.let { startActivity(Intent(this, MeetingsActivity::class.java).putExtras(it)) }
+            }
         }
         when (intent.action) {
             Intent.ACTION_ASSIST, Intent.ACTION_VOICE_COMMAND -> handler.postDelayed({ startListening() }, 300L)
@@ -476,6 +552,8 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         row.addView(barItem(R.drawable.ic_keyboard, R.string.bar_type) { typeTapped() }, weight())
         readButton = barItem(R.drawable.ic_speaker, R.string.bar_read) { readTapped() }
         row.addView(readButton, weight())
+        meetingsButton = barItem(R.drawable.ic_meeting, R.string.bar_meetings) { openMeetings(null) }
+        row.addView(meetingsButton, weight())
         // The door to the rest of the phone: installed apps and Android settings.
         appsButton = barItem(R.drawable.ic_apps, R.string.bar_apps) {
             startActivity(Intent(this, AppsActivity::class.java))
@@ -637,6 +715,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     override fun onUrlChanged(url: String) = noteUrl(url)
 
     private fun noteUrl(url: String) {
+        maybeLinkProject(url)
         // Google usually refuses to sign in inside embedded WebViews. We do not work around
         // that; we tell the owner what to do instead.
         if (engine?.id == "webview" && UrlPolicy.isGoogleSignIn(Uri.parse(url).host)) {
@@ -916,6 +995,12 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     }
 
     override fun onMediaRequest(audio: Boolean, video: Boolean, result: (Boolean) -> Unit) {
+        if (audio && MeetingRecorderService.recording) {
+            // Android does not share the microphone between two recordings.
+            showBanner(getString(R.string.meeting_mic_busy), sticky = true) { openMeetings(null) }
+            result(false)
+            return
+        }
         val names = ArrayList<String>()
         if (audio) names.add(Manifest.permission.RECORD_AUDIO)
         if (video) names.add(Manifest.permission.CAMERA)
@@ -933,6 +1018,17 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
             pendingAttachments.removeAll(files.toSet())
             if (pendingAttachments.isEmpty() && bannerTag == TAG_ATTACH) hideBanner()
             request.deliver(files)
+            if (meetingUploadUri != null && files.contains(meetingUploadUri)) {
+                // The meeting note went to the page: once it shows in the project, the phone copy can go.
+                val id = meetingUploadId
+                meetingUploadUri = null
+                meetingUploadId = null
+                showBanner(getString(R.string.meeting_delivered), sticky = true, tag = TAG_ATTACH) {
+                    val store = MeetingFlow.store(this)
+                    id?.let { store.load(it) }?.let { store.delete(it) }
+                    showBanner(getString(R.string.meeting_removed))
+                }
+            }
             return
         }
         activeFileRequest = request
@@ -1078,6 +1174,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     }
 
     private fun startListening() {
+        if (MeetingRecorderService.recording) {
+            showBanner(getString(R.string.meeting_mic_busy), sticky = true) { openMeetings(null) }
+            return
+        }
         if (!dictation.available()) {
             AlertDialog.Builder(this).setTitle(R.string.voice_unavailable_title)
                 .setMessage(R.string.voice_unavailable).setPositiveButton(android.R.string.ok, null).show()
@@ -1135,6 +1235,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
             if (prefs.showApps && !dedicated()) then() else requireOwner(then)
         }
         override fun dedicated(): Boolean = Kiosk.isLocked(this@MainActivity) || (prefs.kiosk && Kiosk.isDeviceOwner(this@MainActivity))
+        override fun meetings(action: String) = openMeetings(if (action == "open") null else action)
     }
 
     override fun onError(code: Int) {
@@ -1357,6 +1458,12 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         const val EXTRA_PROBE_URL = "probe_url"
         const val EXTRA_PROBE_ENGINE = "probe_engine"
         const val EXTRA_PROBE_SAY = "probe_say"
+        const val EXTRA_PROBE_MEETINGS = "probe_meetings"
+        private const val TAG_LINK = "link"
+        private const val TAG_RESULT = "result"
+
+        /** Meeting note to add to the Claude project, left by the meetings screen. */
+        var pendingMeetingId: String? = null
 
         private const val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
         private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT

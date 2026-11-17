@@ -20,6 +20,9 @@ sealed class PhoneCommand {
     object Wifi : PhoneCommand()
     data class OpenApp(val name: String) : PhoneCommand()
     object Help : PhoneCommand()
+    object MeetingStart : PhoneCommand()
+    object MeetingStop : PhoneCommand()
+    object MeetingsOpen : PhoneCommand()
 }
 
 enum class Answer { YES, NO }
@@ -85,6 +88,18 @@ object PhoneCommands {
             "apri wifi", "apri il wifi", "apri wi-fi", "apri il wi-fi", "wifi", "wi-fi", "impostazioni wifi",
             "impostazioni wi-fi", "open wifi", "open wi-fi", "wifi settings", "wi-fi settings",
         )
+        add(
+            PhoneCommand.MeetingStart,
+            "registra la riunione", "registra riunione", "registra una riunione", "inizia la registrazione",
+            "avvia la registrazione", "nuova riunione", "record the meeting", "record a meeting", "record meeting",
+            "start recording", "new meeting",
+        )
+        add(
+            PhoneCommand.MeetingStop,
+            "ferma la registrazione", "termina la registrazione", "stop alla registrazione", "fine riunione",
+            "fine della riunione", "stop recording", "stop the recording", "end the meeting",
+        )
+        add(PhoneCommand.MeetingsOpen, "apri le riunioni", "apri riunioni", "riunioni", "open meetings", "show meetings", "meetings")
         add(
             PhoneCommand.Help,
             "comandi vocali", "quali comandi", "cosa posso dire", "cosa puoi fare", "aiuto comandi",

@@ -68,6 +68,38 @@ class Prefs(ctx: Context) {
         get() = str("messaging_app", "auto")
         set(v) = put("messaging_app", v)
 
+    /** Meetings: record around the phone, summarise with NotebookLM, keep in a Claude project. */
+    var meetingsEnabled: Boolean
+        get() = bool("meetings", false)
+        set(v) = put("meetings", v)
+
+    /** Name of the owner's meetings project in Claude, and its address once linked. */
+    var meetingsProjectTitle: String
+        get() = str("meetings_project_title", "")
+        set(v) = put("meetings_project_title", v)
+
+    var meetingsProjectUrl: String
+        get() = str("meetings_project_url", "")
+        set(v) = put("meetings_project_url", v)
+
+    /** The next project page the owner opens is offered as the meetings project. */
+    var meetingsLinkPending: Boolean
+        get() = bool("meetings_link_pending", false)
+        set(v) = put("meetings_link_pending", v)
+
+    /** Meeting waiting for NotebookLM's answer, the request copied for it, and the last answer used. */
+    var meetingWaiting: String
+        get() = str("meeting_waiting", "")
+        set(v) = put("meeting_waiting", v)
+
+    var meetingPrompt: String
+        get() = str("meeting_prompt", "")
+        set(v) = put("meeting_prompt", v)
+
+    var meetingConsumed: String
+        get() = str("meeting_consumed", "")
+        set(v) = put("meeting_consumed", v)
+
     var reduceMotion: Boolean
         get() = bool("reduce_motion", lowEnd)
         set(v) = put("reduce_motion", v)

@@ -189,6 +189,29 @@ So the app never places a call silently: a person always sees the number first, 
 coming from the page always wait for "Call" or a spoken "yes". Not verified on a real
 device yet; see [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
 
+## Meetings (optional, Android 10+)
+
+Record a meeting held around the phone, get a summary, a title and a description, and keep it
+in a project of your Claude account. Turned on during setup (or in the owner menu) only if you
+want it.
+
+1. Touch **Meetings** on the bar → **● Record a meeting**. It keeps recording with the screen off;
+   stop it there or from the notification. Then choose **Save** or **Discard**.
+2. **Summarise with NotebookLM**: the app copies a ready-made request and hands the recording to
+   [NotebookLM](https://notebooklm.google/) (Google's app, in your Google account). There you add
+   it to a notebook, paste the request, and copy the answer.
+3. Back in the app, the answer is recognised: **title, description and summary are filled in as a
+   suggestion**; accept them or edit them.
+4. As soon as you accept, **the recording is deleted from the phone** (remove it from NotebookLM
+   too if you wish).
+5. The app opens your **"Meetings" project in Claude** with the note ready: touch *Add content* →
+   upload file (the text is also copied, for *Add text content*). Then remove it from the phone.
+
+The project is created by you in the page during the first use (the app copies the name you
+chose in setup and recognises the project when you open it); the app never creates or changes
+anything in Claude by itself. Why NotebookLM: claude.ai does not accept audio files, and this
+project uses no API. Not verified on a real device yet.
+
 ## Fragile by design: the three "page tools"
 
 The app runs exactly three small functions inside the page, on demand

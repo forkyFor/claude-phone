@@ -23,13 +23,20 @@ class FilesProvider : ContentProvider() {
         val name = uri.lastPathSegment ?: throw IllegalArgumentException("no name")
         if (name.contains('/') || name.contains("..")) throw SecurityException("bad name")
         // content://<app>.files/attach/<name> or .../dl/<name> (downloads saved by the Gecko engine)
-        val base = if (uri.pathSegments.firstOrNull() == "dl") downloads(context!!) else dir(context!!)
+        val base = when (uri.pathSegments.firstOrNull()) {
+            "dl" -> downloads(context!!)
+            "meet" -> MeetingFlow.dir(context!!) // a meeting recording for NotebookLM, or its note for Claude
+            else -> dir(context!!)
+        }
         return File(base, name)
     }
 
-    override fun getType(uri: Uri): String =
-        MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileFor(uri).extension.lowercase())
+    override fun getType(uri: Uri): String = when (fileFor(uri).extension.lowercase()) {
+        "md" -> "text/markdown"
+        "m4a" -> "audio/mp4"
+        else -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileFor(uri).extension.lowercase())
             ?: "application/octet-stream"
+    }
 
     override fun query(uri: Uri, projection: Array<String>?, s: String?, a: Array<String>?, o: String?): Cursor {
         val f = fileFor(uri)
@@ -67,7 +74,11 @@ class FilesProvider : ContentProvider() {
             ctx.getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS) ?: dir(ctx)
 
         fun uriFor(ctx: Context, file: File): Uri {
-            val root = if (file.parentFile == dir(ctx)) "attach" else "dl"
+            val root = when (file.parentFile) {
+                dir(ctx) -> "attach"
+                MeetingFlow.dir(ctx) -> "meet"
+                else -> "dl"
+            }
             return Uri.parse("content://${ctx.packageName}.files/$root/${Uri.encode(file.name)}")
         }
 

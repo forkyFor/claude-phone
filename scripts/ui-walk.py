@@ -116,6 +116,7 @@ def main():
         time.sleep(1)
     press("pin-save", "Save")
     press("mode", "Use it as a normal app")
+    press("meetings", "No, thanks", optional=True)
     press("sign-in", "Open Claude")
     time.sleep(25)
 

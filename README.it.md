@@ -198,6 +198,29 @@ Per questo l'app non chiama mai in silenzio: una persona vede sempre il numero p
 numeri che arrivano dalla pagina aspettano sempre "Chiama" o un "sì" detto a voce. Non
 ancora verificato su un dispositivo reale; vedi [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
 
+## Riunioni (facoltativo, Android 10+)
+
+Registra una riunione che si svolge attorno al telefono, ottieni riassunto, titolo e
+descrizione, e conservala in un progetto del tuo account Claude. Si attiva nella configurazione
+iniziale (o dal menu del proprietario) solo se la vuoi.
+
+1. Tocca **Riunioni** sulla barra → **● Registra una riunione**. Continua anche a schermo spento;
+   fermala da lì o dalla notifica. Poi scegli **Salva** o **Scarta**.
+2. **Riassumi con NotebookLM**: l'app copia una richiesta già pronta e passa la registrazione a
+   [NotebookLM](https://notebooklm.google/) (app di Google, nel tuo account Google). Lì la aggiungi
+   a un taccuino, incolli la richiesta e copi la risposta.
+3. Tornando nell'app la risposta viene riconosciuta: **titolo, descrizione e riassunto sono già
+   compilati come suggerimento**; li accetti o li modifichi.
+4. Appena accetti, **la registrazione viene eliminata dal telefono** (se vuoi, toglila anche da
+   NotebookLM).
+5. L'app apre il tuo **progetto "Riunioni" in Claude** con la nota pronta: tocca *Aggiungi
+   contenuto* → carica file (il testo è anche copiato, per *Aggiungi testo*). Poi la togli dal telefono.
+
+Il progetto lo crei tu nella pagina al primo utilizzo (l'app copia il nome scelto nella
+configurazione e riconosce il progetto quando lo apri); l'app non crea né modifica nulla in
+Claude da sola. Perché NotebookLM: claude.ai non accetta file audio, e questo progetto non usa
+alcuna API. Non ancora verificato su un dispositivo reale.
+
 ## Fragili per natura: i tre "strumenti di pagina"
 
 L'app esegue esattamente tre piccole funzioni dentro la pagina, su richiesta

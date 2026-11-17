@@ -182,6 +182,30 @@ class OwnerActivity : BaseActivity() {
         })
 
         // ---- home and lock
+        if (Build.VERSION.SDK_INT >= 29) {
+            col.addView(Ui.section(c, getString(R.string.meeting_title)))
+            col.addView(Ui.switchRow(c, getString(R.string.owner_meetings), prefs.meetingsEnabled) { prefs.meetingsEnabled = it })
+            val nb = NotebookLm.find(c)
+            col.addView(Ui.body(c, getString(if (nb != null) R.string.meeting_setup_notebooklm_ok else R.string.meeting_setup_need_notebooklm), muted = true))
+            if (nb == null) {
+                col.addView(Ui.secondaryButton(c, getString(R.string.meeting_install_notebooklm)) {
+                    try { startActivity(NotebookLm.storePage()) } catch (e: Exception) { toast(getString(R.string.no_store)) }
+                })
+            }
+            val title = prefs.meetingsProjectTitle.ifBlank { getString(R.string.meeting_project_default) }
+            col.addView(Ui.secondaryButton(c, getString(R.string.meeting_link_project, title)) {
+                textDialog(R.string.meeting_setup_project, title, R.string.meeting_project_default) { t ->
+                    prefs.meetingsProjectTitle = t.ifBlank { getString(R.string.meeting_project_default) }
+                    prefs.meetingsProjectUrl = ""
+                    prefs.meetingsLinkPending = true
+                    prefs.meetingsEnabled = true
+                    MeetingFlow.copy(c, "project", prefs.meetingsProjectTitle)
+                    backToClaude(MainActivity.ACTION_LOAD + UrlPolicy.PROJECTS_URL)
+                }
+            })
+            col.addView(Ui.body(c, prefs.meetingsProjectUrl.ifEmpty { getString(R.string.meeting_project_not_linked) }, muted = true))
+        }
+
         col.addView(Ui.section(c, getString(R.string.owner_sec_lock)))
         col.addView(Ui.secondaryButton(c, getString(R.string.owner_home)) { requestHome() })
         col.addView(Ui.switchRow(c, getString(R.string.owner_show_apps), prefs.showApps) { prefs.showApps = it })

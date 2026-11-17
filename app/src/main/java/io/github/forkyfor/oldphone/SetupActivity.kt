@@ -20,12 +20,13 @@ import io.github.forkyfor.oldphone.engine.EngineInfo
  * Nothing here needs technical knowledge; everything can be changed later in the owner menu.
  */
 class SetupActivity : BaseActivity() {
-    private enum class Step { WELCOME, LANGUAGE, WIFI, ENGINE, MIC, CAMERA, PIN, MODE, SIGN_IN }
+    private enum class Step { WELCOME, LANGUAGE, WIFI, ENGINE, MIC, CAMERA, PIN, MODE, MEETINGS, SIGN_IN }
 
     private lateinit var prefs: Prefs
     private var step = Step.WELCOME
     private var waitingForHome = false
     private var note: String? = null
+    private var meetingsWanted = false
     private var engineTested = false
     private var engineTesting = false
     private var engineResult: Boolean? = null
@@ -62,7 +63,8 @@ class SetupActivity : BaseActivity() {
     private fun go(next: Step, back: Boolean = false) {
         var s = next
         // Before Android 6 permissions are granted when the app is installed.
-        while (Build.VERSION.SDK_INT < 23 && (s == Step.MIC || s == Step.CAMERA)) {
+        // Before Android 6 permissions are granted at install; NotebookLM needs Android 10.
+        while ((Build.VERSION.SDK_INT < 23 && (s == Step.MIC || s == Step.CAMERA)) || (Build.VERSION.SDK_INT < 29 && s == Step.MEETINGS)) {
             s = Step.values()[s.ordinal + if (back) -1 else 1]
         }
         step = s
@@ -139,6 +141,7 @@ class SetupActivity : BaseActivity() {
                 col.addView(Ui.secondaryButton(this, getString(R.string.btn_mode_app)) { next() })
                 col.addView(Ui.body(this, getString(R.string.setup_mode_more), muted = true))
             }
+            Step.MEETINGS -> meetingsStep(col)
             Step.SIGN_IN -> {
                 col.addView(Ui.title(this, getString(R.string.setup_signin_title)))
                 col.addView(Ui.body(this, getString(R.string.setup_signin_body)))
@@ -219,6 +222,59 @@ class SetupActivity : BaseActivity() {
             col.addView(Ui.secondaryButton(this, getString(R.string.btn_continue_anyway)) { next() })
         }
         col.addView(Ui.body(this, "$info · Android ${Build.VERSION.RELEASE}", muted = true))
+    }
+
+    /** Optional meetings: wanted? NotebookLM installed? Name of the Claude project. */
+    private fun meetingsStep(col: LinearLayout) {
+        col.addView(Ui.title(this, getString(R.string.meeting_setup_title)))
+        if (!meetingsWanted) {
+            col.addView(Ui.body(this, getString(R.string.meeting_setup_body)))
+            col.addView(Ui.primaryButton(this, getString(R.string.meeting_setup_yes)) {
+                meetingsWanted = true
+                render()
+            })
+            col.addView(Ui.secondaryButton(this, getString(R.string.meeting_setup_no)) {
+                prefs.meetingsEnabled = false
+                next()
+            })
+            return
+        }
+        if (NotebookLm.find(this) == null) {
+            col.addView(Ui.body(this, getString(R.string.meeting_setup_need_notebooklm)))
+            col.addView(Ui.primaryButton(this, getString(R.string.meeting_install_notebooklm)) {
+                try {
+                    startActivity(NotebookLm.storePage())
+                } catch (e: Exception) {
+                    note = getString(R.string.no_store)
+                    render()
+                }
+            })
+            col.addView(Ui.secondaryButton(this, getString(R.string.meeting_setup_without)) {
+                prefs.meetingsEnabled = false
+                next()
+            })
+            return
+        }
+        col.addView(Ui.body(this, getString(R.string.meeting_setup_notebooklm_ok)))
+        col.addView(Ui.body(this, getString(R.string.meeting_setup_project)))
+        val name = EditText(this).apply {
+            setText(prefs.meetingsProjectTitle.ifBlank { getString(R.string.meeting_project_default) })
+            textSize = 20f
+            isSingleLine = true
+        }
+        col.addView(name)
+        col.addView(Ui.primaryButton(this, getString(R.string.btn_continue)) {
+            val title = name.text.toString().trim()
+            if (title.isEmpty()) {
+                name.error = getString(R.string.meeting_setup_project)
+                return@primaryButton
+            }
+            prefs.meetingsProjectTitle = title
+            prefs.meetingsEnabled = true
+            prefs.meetingsLinkPending = prefs.meetingsProjectUrl.isEmpty()
+            next()
+        })
+        col.addView(Ui.body(this, getString(R.string.meeting_setup_after), muted = true))
     }
 
     private fun pinField(hint: Int) = EditText(this).apply {

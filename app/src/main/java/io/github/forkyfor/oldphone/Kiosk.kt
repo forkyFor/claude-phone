@@ -54,7 +54,7 @@ object Kiosk {
                 (ctx.getSystemService(Context.TELECOM_SERVICE) as android.telecom.TelecomManager).defaultDialerPackage
             } else null,
             "com.android.server.telecom", "com.android.incallui",
-        ) + PhoneActions.WHATSAPP_PACKAGES
+        ) + PhoneActions.WHATSAPP_PACKAGES + NotebookLm.PACKAGE
         d.setLockTaskPackages(admin(ctx), (listOf(ctx.packageName) + helpers + telecom).distinct().toTypedArray())
         if (Build.VERSION.SDK_INT >= 28) {
             // Keep only the power menu: no status bar, notifications, Home or Recents.

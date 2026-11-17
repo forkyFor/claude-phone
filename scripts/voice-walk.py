@@ -74,6 +74,74 @@ def top_package():
     return m.group(1) if m else ""
 
 
+def probe_start(*extras):
+    args = ["shell", "am", "start", "-n", f"{PKG}/.MainActivity", "--ez", "probe", "true"]
+    for e in extras:
+        args += list(e)
+    adb(*args)
+
+
+def meeting_files():
+    return adb("shell", "run-as", PKG, "ls", "files/meetings").split()
+
+
+def meetings():
+    """Meetings (Android 10+): record, save, NotebookLM's answer simulated, audio deleted."""
+    api = int(adb("shell", "getprop", "ro.build.version.sdk").strip() or 0)
+    if api < 29:
+        print("VOICE skip meetings (needs Android 10)", flush=True)
+        return
+    probe_start(("--ez", "probe_meetings", "true"))
+    time.sleep(3)
+    root = say("open meetings")
+    check("meetings screen", any("Record a meeting" in t for t in texts(root)), root=root)
+    rec = node(root, "● Record a meeting")
+    if rec is not None:
+        tap(rec)
+        time.sleep(6)
+        root = dump()
+        stop = node(root, "■ Stop recording")
+        failed = any("could not start" in t for t in texts(root))
+        check("recording starts or explains why not", stop is not None or failed, root=root)
+        if stop is not None:
+            tap(stop)
+            time.sleep(3)
+            root = dump()
+            check("asks to save or discard", node(root, "Save") is not None, root=root)
+            save = node(root, "Save")
+            if save is not None:
+                tap(save)
+                later = node(dump(), "Later")
+                if later is not None:
+                    tap(later)
+        else:
+            ok = node(root, "OK")
+            if ok is not None:
+                tap(ok)
+    # NotebookLM is not on emulators: a stored recording and its answer are simulated.
+    existing = set(meeting_files())
+    probe_start(("--ez", "probe_fake_meeting", "true"))
+    time.sleep(4)
+    fake = [f for f in meeting_files() if f.endswith(".m4a") and f not in existing]
+    check("recording kept until the result", len(fake) == 1, " ".join(fake))
+    answer = "TITLE: Budget review\nDESCRIPTION: Quarterly numbers.\nSUMMARY: Costs are down 4%."
+    probe_start(("--es", "probe_result", shlex.quote(answer)))
+    time.sleep(4)
+    root = dump()
+    check("suggested title and description", any("Budget review" in t for t in texts(root)), root=root)
+    accept = node(root, "Accept")
+    if accept is not None:
+        tap(accept)
+        time.sleep(2)
+        later = node(dump(), "Later")
+        if later is not None:
+            tap(later)
+    after = meeting_files()
+    check("audio deleted after the result",
+          accept is not None and bool(fake) and fake[0] not in after and any(f.endswith("Budget review.md") for f in after),
+          " ".join(after))
+
+
 def main():
     adb("shell", "am", "start", "-W", "-n", f"{PKG}/.MainActivity")
     time.sleep(6)
@@ -130,6 +198,7 @@ def main():
     check("open settings", "settings" in pkg.lower(), pkg)
     adb("shell", "am", "start", "-W", "-n", f"{PKG}/.MainActivity")
 
+    meetings()
     print("VOICE RESULT", "OK" if all(results) else "FAILED", flush=True)
     sys.exit(0 if all(results) else 1)
 

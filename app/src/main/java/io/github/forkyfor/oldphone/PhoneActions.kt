@@ -43,6 +43,8 @@ class PhoneActions(private val a: Activity, private val host: Host) {
         /** Runs [then] directly, or after the owner PIN when other apps are meant to be out of reach. */
         fun ownerGate(then: () -> Unit)
         fun dedicated(): Boolean
+        /** "start", "stop" or "open" the meetings screen. */
+        fun meetings(action: String)
     }
 
     private class Contact(val name: String, val number: String, val label: String)
@@ -74,6 +76,9 @@ class PhoneActions(private val a: Activity, private val host: Host) {
             }
             is PhoneCommand.OpenApp -> openApp(cmd.name)
             PhoneCommand.Help -> help()
+            PhoneCommand.MeetingStart -> host.meetings(MeetingsActivity.ACTION_START)
+            PhoneCommand.MeetingStop -> host.meetings(MeetingsActivity.ACTION_STOP)
+            PhoneCommand.MeetingsOpen -> host.meetings("open")
         }
     }
 
