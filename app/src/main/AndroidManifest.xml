@@ -26,6 +26,9 @@
 
     <!-- Android 11+: components of other apps this app needs to see. -->
     <queries>
+        <!-- WhatsApp, to prepare messages with its public "click to chat" link. -->
+        <package android:name="com.whatsapp" />
+        <package android:name="com.whatsapp.w4b" />
         <intent>
             <action android:name="android.speech.RecognitionService" />
         </intent>

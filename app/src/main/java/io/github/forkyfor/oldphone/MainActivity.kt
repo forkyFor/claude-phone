@@ -400,6 +400,9 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         textSize = 12f
         gravity = Gravity.CENTER
         maxLines = 1
+        ellipsize = android.text.TextUtils.TruncateAt.END
+        // Up to seven buttons on a small screen: let long labels shrink a little.
+        if (Build.VERSION.SDK_INT >= 26) setAutoSizeTextTypeUniformWithConfiguration(9, 12, 1, TypedValue.COMPLEX_UNIT_SP)
         setTextColor(Ui.color(this@MainActivity, R.color.on_bg))
         setCompoundDrawablesWithIntrinsicBounds(0, icon, 0, 0)
         compoundDrawablePadding = Ui.dp(this@MainActivity, 2)
@@ -470,6 +473,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         })
 
         row.addView(barItem(R.drawable.ic_camera, R.string.bar_camera) { cameraTapped() }, weight())
+        row.addView(barItem(R.drawable.ic_keyboard, R.string.bar_type) { typeTapped() }, weight())
         readButton = barItem(R.drawable.ic_speaker, R.string.bar_read) { readTapped() }
         row.addView(readButton, weight())
         // The door to the rest of the phone: installed apps and Android settings.
@@ -1027,6 +1031,45 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         }
     }
 
+    // ---------------------------------------------------------------- typed commands
+
+    /** The same commands as the microphone, typed: for noisy rooms, or when speaking is not an option. */
+    private fun typeTapped() {
+        if (speaker.speaking) speaker.stop()
+        val input = android.widget.EditText(this).apply {
+            setHint(R.string.type_hint)
+            isSingleLine = true
+            imeOptions = android.view.inputmethod.EditorInfo.IME_ACTION_SEND
+            textSize = 20f
+        }
+        val box = FrameLayout(this).apply {
+            val p = Ui.dp(this@MainActivity, 24)
+            setPadding(p, p / 2, p, 0)
+            addView(input)
+        }
+        val dialog = AlertDialog.Builder(this).setTitle(R.string.type_title).setView(box)
+            .setPositiveButton(R.string.type_send) { _, _ -> submitTyped(input.text.toString()) }
+            .setNegativeButton(android.R.string.cancel, null)
+            .create()
+        input.setOnEditorActionListener { _, action, _ ->
+            if (action == android.view.inputmethod.EditorInfo.IME_ACTION_SEND) {
+                dialog.dismiss()
+                submitTyped(input.text.toString())
+                true
+            } else {
+                false
+            }
+        }
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        dialog.show()
+        input.requestFocus()
+    }
+
+    private fun submitTyped(text: String) {
+        val t = text.trim()
+        if (t.isNotEmpty()) handleUtterance(t)
+    }
+
     // ---------------------------------------------------------------- voice
 
     private fun micTapped() {
@@ -1056,7 +1099,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         if (bannerTag == TAG_VOICE) banner.text = text
     }
 
-    override fun onFinal(text: String) {
+    override fun onFinal(text: String) = handleUtterance(text)
+
+    /** One path for spoken and typed sentences: answer, command, or text for Claude. */
+    private fun handleUtterance(text: String) {
         // A "yes" / "no" for a call waiting for confirmation comes first.
         if (phone.handleAnswer(text)) return
         when (VoiceCommands.match(text)) {

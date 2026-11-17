@@ -7,7 +7,8 @@ recogniser had returned it (debug builds only, extra "probe_say"). Checks:
   2. "what time is it"     -> the spoken/banner answer appears
   3. "call 123 4567" + Cancel -> confirmation dialog with countdown, no call placed
   4. "call 123 4567", wait -> after the countdown a real call starts (emulator modem), then hung up
-  5. "open settings"       -> Android settings come to the front
+  5. typing "what time is it" in the Type box -> the same answer
+  6. "open settings"       -> Android settings come to the front
 Exit code 0 = all passed.
 """
 import re
@@ -105,6 +106,22 @@ def main():
     check("countdown places the call", calling, top_package())
     adb("shell", "input", "keyevent", "KEYCODE_ENDCALL")
     time.sleep(3)
+
+    # Typed command: the "Type" button on the bar, same commands as the microphone.
+    adb("shell", "am", "start", "-W", "-n", f"{PKG}/.MainActivity")
+    time.sleep(3)
+    root = dump()
+    typed = node(root, "Type")
+    if typed is not None:
+        tap(typed)
+        adb("shell", "input", "text", "what%stime%sis%sit")
+        time.sleep(1)
+        send = node(dump(), "Send")
+        if send is not None:
+            tap(send)
+        time.sleep(3)
+        root = dump()
+    check("typed command", typed is not None and any(t.startswith("It is ") for t in texts(root)), root=root)
 
     adb("shell", "am", "start", "-W", "-n", f"{PKG}/.MainActivity")
     time.sleep(3)

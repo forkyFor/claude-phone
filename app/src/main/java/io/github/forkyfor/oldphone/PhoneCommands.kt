@@ -8,7 +8,8 @@ sealed class PhoneCommand {
     data class Call(val who: String) : PhoneCommand()
     /** "Call the number": the number is taken from Claude's last reply, then confirmed. */
     object CallFromReply : PhoneCommand()
-    data class Message(val who: String, val body: String?) : PhoneCommand()
+    /** [channel] null = the app chosen in the owner menu (WhatsApp if installed, else SMS). */
+    data class Message(val who: String, val body: String?, val channel: Channel? = null) : PhoneCommand()
     object VolumeUp : PhoneCommand()
     object VolumeDown : PhoneCommand()
     object Mute : PhoneCommand()
@@ -22,6 +23,8 @@ sealed class PhoneCommand {
 }
 
 enum class Answer { YES, NO }
+
+enum class Channel { WHATSAPP, SMS }
 
 /**
  * Parser for the phone commands, in English and Italian. Pure Kotlin so it is unit tested.
@@ -90,10 +93,18 @@ object PhoneCommands {
     }
 
     private val callRegex = Regex("^(?:chiama|telefona a|telefona|fai una telefonata a|fai una chiamata a|call|phone|ring|dial) (.+)$")
-    private val messageRegexes = listOf(
-        Regex("^(?:manda|invia|scrivi) (?:un )?(?:messaggio|sms) (?:a|al|alla|allo|ad) (.+?)(?: (?:dicendo|che dice|con scritto|scrivendo) (.+))?$"),
-        Regex("^(?:send|write) (?:a )?(?:message|text|sms) to (.+?)(?: (?:saying|that says) (.+))?$"),
-        Regex("^text (.+?)(?: saying (.+))?$"),
+    private const val SAYING_IT = "(?: (?:dicendo|che dice|con scritto|scrivendo) (.+))?$"
+    private const val SAYING_EN = "(?: (?:saying|that says) (.+))?$"
+    private const val TO_IT = "(?:a|al|alla|allo|ad)"
+    private val messageRegexes: List<Pair<Regex, Channel?>> = listOf(
+        Regex("^(?:manda|invia|scrivi) (?:un )?(?:whatsapp|messaggio whatsapp|messaggio su whatsapp|messaggio con whatsapp) $TO_IT (.+?)$SAYING_IT") to Channel.WHATSAPP,
+        Regex("^(?:manda|invia|scrivi) (?:un )?sms $TO_IT (.+?)$SAYING_IT") to Channel.SMS,
+        Regex("^(?:manda|invia|scrivi) (?:un )?messaggio $TO_IT (.+?)$SAYING_IT") to null,
+        Regex("^(?:send|write) (?:a )?(?:whatsapp|whatsapp message) to (.+?)$SAYING_EN") to Channel.WHATSAPP,
+        Regex("^whatsapp (.+?) saying (.+)$") to Channel.WHATSAPP,
+        Regex("^(?:send|write) (?:an )?sms to (.+?)$SAYING_EN") to Channel.SMS,
+        Regex("^(?:send|write) (?:a )?(?:message|text) to (.+?)$SAYING_EN") to null,
+        Regex("^text (.+?)(?: saying (.+))?$") to null,
     )
     private val openRegex = Regex("^(?:apri|avvia|lancia|open|launch|start) (?:l'app |l app |la app |app |the app )?(.+)$")
     private val leadingArticle = Regex("^(?:il|lo|la|l'|i|gli|le|al|alla|allo|a|mia|mio|the|my) ")
@@ -108,11 +119,11 @@ object PhoneCommands {
         val n = VoiceCommands.normalize(utterance)
         if (n.isEmpty()) return null
         fixed[n]?.let { return it }
-        for (r in messageRegexes) {
+        for ((r, channel) in messageRegexes) {
             val m = r.find(n) ?: continue
             val who = target(m.groupValues[1]) ?: return null
             val body = m.groupValues.getOrNull(2)?.takeIf { it.isNotBlank() }
-            return PhoneCommand.Message(who, body)
+            return PhoneCommand.Message(who, body, channel)
         }
         callRegex.find(n)?.let { m -> return target(m.groupValues[1])?.let { PhoneCommand.Call(it) } }
         openRegex.find(n)?.let { m ->

@@ -63,6 +63,11 @@ class Prefs(ctx: Context) {
         get() = bool("call_countdown", true)
         set(v) = put("call_countdown", v)
 
+    /** "auto" (WhatsApp if installed, else SMS), "whatsapp" or "sms". */
+    var messagingApp: String
+        get() = str("messaging_app", "auto")
+        set(v) = put("messaging_app", v)
+
     var reduceMotion: Boolean
         get() = bool("reduce_motion", lowEnd)
         set(v) = put("reduce_motion", v)

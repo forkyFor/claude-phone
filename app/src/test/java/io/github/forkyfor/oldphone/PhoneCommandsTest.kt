@@ -37,6 +37,17 @@ class PhoneCommandsTest {
         assertEquals(PhoneCommand.Message("luca", "i'm late"), PhoneCommands.parse("text Luca saying I'm late"))
     }
 
+    @Test fun whatsappAndSms() {
+        assertEquals(
+            PhoneCommand.Message("mario", "ciao a dopo", Channel.WHATSAPP),
+            PhoneCommands.parse("Manda un WhatsApp a Mario dicendo ciao a dopo")
+        )
+        assertEquals(PhoneCommand.Message("luca", null, Channel.WHATSAPP), PhoneCommands.parse("invia un messaggio su whatsapp a Luca"))
+        assertEquals(PhoneCommand.Message("anna", "ok", Channel.SMS), PhoneCommands.parse("manda un sms ad Anna dicendo ok"))
+        assertEquals(PhoneCommand.Message("tom", "on my way", Channel.WHATSAPP), PhoneCommands.parse("WhatsApp Tom saying on my way"))
+        assertEquals(PhoneCommand.OpenApp("whatsapp"), PhoneCommands.parse("apri WhatsApp"))
+    }
+
     @Test fun deviceCommands() {
         assertEquals(PhoneCommand.VolumeUp, PhoneCommands.parse("Alza il volume"))
         assertEquals(PhoneCommand.VolumeDown, PhoneCommands.parse("volume giù"))

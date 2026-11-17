@@ -17,8 +17,11 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.ContactsContract
 import android.provider.Settings
+import android.telephony.PhoneNumberUtils
+import android.telephony.TelephonyManager
 import android.widget.TextView
 import java.util.Date
+import java.util.Locale
 
 /**
  * Carries out [PhoneCommand]s with the phone's own apps and services.
@@ -58,7 +61,7 @@ class PhoneActions(private val a: Activity, private val host: Host) {
         when (cmd) {
             is PhoneCommand.Call -> call(cmd.who, original)
             PhoneCommand.CallFromReply -> callFromReply()
-            is PhoneCommand.Message -> message(cmd.who, cmd.body, original)
+            is PhoneCommand.Message -> message(cmd.who, cmd.body, cmd.channel, original)
             PhoneCommand.VolumeUp -> volume(AudioManager.ADJUST_RAISE)
             PhoneCommand.VolumeDown -> volume(AudioManager.ADJUST_LOWER)
             PhoneCommand.Mute -> volume(if (Build.VERSION.SDK_INT >= 23) AudioManager.ADJUST_MUTE else 0)
@@ -139,15 +142,66 @@ class PhoneActions(private val a: Activity, private val host: Host) {
         }
     }
 
-    private fun message(who: String, body: String?, original: String) {
-        if (!canPhone()) return
+    /**
+     * Prepares a message; the owner always presses Send. WhatsApp is reached with its public
+     * "click to chat" link, so it works the same when the phone is a WhatsApp linked device.
+     */
+    private fun message(who: String, body: String?, channel: Channel?, original: String) {
+        val whatsapp = when (channel) {
+            Channel.WHATSAPP -> true
+            Channel.SMS -> false
+            null -> prefs.messagingApp == "whatsapp" || (prefs.messagingApp == "auto" && whatsappPackage() != null)
+        }
+        val pkg = if (whatsapp) whatsappPackage() else null
+        if (whatsapp && pkg == null) {
+            host.banner(s(R.string.phone_no_whatsapp))
+            return
+        }
+        if (!whatsapp && !canPhone()) return
         val send = { number: String, name: String ->
-            val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", number, null))
-            if (!body.isNullOrBlank()) intent.putExtra("sms_body", body)
-            if (start(intent, R.string.phone_no_sms_app)) host.say(s(R.string.phone_message_ready, name))
+            if (pkg != null) sendWhatsApp(pkg, number, name, body) else sendSms(number, name, body)
         }
         val number = PhoneCommands.dialable(who)
         if (number != null) send(number, number) else findContact(who, original) { c, _ -> send(c.number, c.name) }
+    }
+
+    private fun sendSms(number: String, name: String, body: String?) {
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", number, null))
+        if (!body.isNullOrBlank()) intent.putExtra("sms_body", body)
+        if (start(intent, R.string.phone_no_sms_app)) host.say(s(R.string.phone_message_ready, name))
+    }
+
+    private fun sendWhatsApp(pkg: String, number: String, name: String, body: String?) {
+        val international = toInternational(number)
+        if (international == null) {
+            host.banner(s(R.string.phone_no_country_code, number))
+            return
+        }
+        val url = "https://api.whatsapp.com/send?phone=" + international.removePrefix("+") +
+            (if (body.isNullOrBlank()) "" else "&text=" + Uri.encode(body))
+        if (start(Intent(Intent.ACTION_VIEW, Uri.parse(url)).setPackage(pkg), R.string.phone_no_whatsapp)) {
+            host.say(s(R.string.phone_whatsapp_ready, name))
+        }
+    }
+
+    /** "333 1234567" -> "+393331234567", using the SIM/network country, or the phone's region without a SIM. */
+    private fun toInternational(number: String): String? {
+        val clean = number.filter { it.isDigit() || it == '+' }
+        if (clean.startsWith("+")) return clean
+        if (clean.startsWith("00")) return "+" + clean.drop(2)
+        val tm = a.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+        val iso = listOf(tm?.networkCountryIso, tm?.simCountryIso, Locale.getDefault().country)
+            .firstOrNull { !it.isNullOrBlank() }?.uppercase(Locale.ROOT) ?: return null
+        return PhoneNumberUtils.formatNumberToE164(clean, iso)
+    }
+
+    private fun whatsappPackage(): String? = WHATSAPP_PACKAGES.firstOrNull {
+        try {
+            a.packageManager.getPackageInfo(it, 0)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun confirmCall(name: String?, number: String, countdown: Boolean, fromPage: Boolean, alreadyChosen: Boolean = false) {
@@ -374,5 +428,6 @@ class PhoneActions(private val a: Activity, private val host: Host) {
 
     companion object {
         const val COUNTDOWN_SECONDS = 5
+        val WHATSAPP_PACKAGES = listOf("com.whatsapp", "com.whatsapp.w4b")
     }
 }

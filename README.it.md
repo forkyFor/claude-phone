@@ -163,14 +163,15 @@ la condivisione di testo usa quel link documentato.
 
 ## Comandi vocali per il telefono e telefonate
 
-Premi il microfono e parla. Alcune frasi brevi vengono gestite **sul telefono** invece di
-essere inviate a Claude (di' "comandi vocali" per l'elenco completo):
+Premi il microfono e parla, oppure tocca **Scrivi** e scrivi la stessa frase (utile in
+ambienti rumorosi o quando non si può parlare). Alcune frasi brevi vengono gestite **sul
+telefono** invece di essere inviate a Claude (di' o scrivi "comandi vocali" per l'elenco):
 
 | Di' | Cosa succede |
 |---|---|
 | "Chiama Mario" · "Chiama il 333 123 4567" | Trova il contatto, mostra **chi e quale numero** e chiama dopo un conto alla rovescia visibile di 5 secondi (o subito se tocchi Chiama). Più contatti simili: scegli tu. |
 | "Chiama il numero" | Prende il numero dall'**ultima risposta di Claude** (o dal testo selezionato) e chiede conferma. Toccare un numero di telefono nella pagina fa lo stesso. |
-| "Manda un messaggio a Mario dicendo sto arrivando" | Apre l'app dei messaggi con il testo pronto: l'invio lo tocchi **tu**. |
+| "Manda un WhatsApp a Mario dicendo sto arrivando" · "Manda un SMS a …" · "Manda un messaggio a …" | Apre WhatsApp (con il suo link pubblico "click to chat") o l'app SMS con il testo pronto: l'invio lo tocchi **tu**. "Messaggio" usa l'app scelta nel menu del proprietario: WhatsApp se installato, altrimenti SMS. |
 | "Alza / Abbassa il volume", "Silenzia", "Accendi / Spegni la torcia" | Eseguito subito. |
 | "Che ore sono?", "Quanta batteria?" | Risposta a voce. |
 | "Apri impostazioni", "Apri Wi-Fi", "Apri Calendario" | Lo apre (con il PIN del proprietario se il pulsante App è spento). |

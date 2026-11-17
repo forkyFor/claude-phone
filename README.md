@@ -156,14 +156,15 @@ that documented link is what share-in uses for text.
 
 ## Voice commands for the phone, and calls
 
-Press the microphone and speak. A few short sentences are handled **on the phone** instead of
-being sent to Claude (say "voice commands" for the full list):
+Press the microphone and speak, or touch **Type** and write the same sentence (for noisy rooms
+or when speaking is not an option). A few short sentences are handled **on the phone** instead
+of being sent to Claude (say or type "voice commands" for the full list):
 
 | Say | What happens |
 |---|---|
 | "Call Mario" · "Call 333 123 4567" | Finds the contact, shows **who and which number**, and calls after a visible 5-second countdown (or at once if you touch Call). Several matches: you pick one. |
 | "Call the number" | Takes the phone number from **Claude's last reply** (or the text you selected) and asks you to confirm. Touching a phone number in the page does the same. |
-| "Send a message to Mario saying I'm on my way" | Opens the messaging app with the text ready: **you** press Send. |
+| "Send a WhatsApp to Mario saying I'm on my way" · "Send an SMS to …" · "Send a message to …" | Opens WhatsApp (its public "click to chat" link) or the SMS app with the text ready: **you** press Send. "Message" uses the app chosen in the owner menu: WhatsApp if installed, otherwise SMS. |
 | "Volume up / down", "Mute", "Turn on / off the flashlight" | Done at once. |
 | "What time is it?", "Battery level" | Answered aloud. |
 | "Open settings", "Open Wi-Fi", "Open Calendar" | Opens it (with the owner PIN if the Apps button is off). |
