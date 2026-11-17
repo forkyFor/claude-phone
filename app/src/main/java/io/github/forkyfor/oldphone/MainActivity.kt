@@ -1147,8 +1147,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
             .setPositiveButton(R.string.type_send) { _, _ -> submitTyped(input.text.toString()) }
             .setNegativeButton(android.R.string.cancel, null)
             .create()
-        input.setOnEditorActionListener { _, action, _ ->
-            if (action == android.view.inputmethod.EditorInfo.IME_ACTION_SEND) {
+        input.setOnEditorActionListener { _, action, event ->
+            // The keyboard's Send key, or Enter on a physical keyboard.
+            val enter = event?.keyCode == android.view.KeyEvent.KEYCODE_ENTER && event.action == android.view.KeyEvent.ACTION_DOWN
+            if (action == android.view.inputmethod.EditorInfo.IME_ACTION_SEND || enter) {
                 dialog.dismiss()
                 submitTyped(input.text.toString())
                 true

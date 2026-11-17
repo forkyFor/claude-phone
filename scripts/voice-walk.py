@@ -54,6 +54,17 @@ def tap(n):
     time.sleep(2)
 
 
+def wait_for(condition, seconds=6):
+    """Polls the screen until condition(root) is true; returns the screen or None."""
+    end = time.time() + seconds
+    while time.time() < end:
+        root = dump()
+        if condition(root):
+            return root
+        time.sleep(1)
+    return None
+
+
 def say(sentence, wait=5):
     # adb joins the arguments with spaces for the device shell: the sentence must be quoted.
     adb("shell", "am", "start", "-n", f"{PKG}/.MainActivity", "--ez", "probe", "true", "--es", "probe_say", shlex.quote(sentence))
@@ -186,16 +197,18 @@ def main():
         tap(anyway)
         root = dump()
     typed = node(root, "Type")
+    answered = False
     if typed is not None:
         tap(typed)
-        adb("shell", "input", "text", "what%stime%sis%sit")
-        time.sleep(1)
-        send = node(dump(), "Send")
-        if send is not None:
-            tap(send)
-        time.sleep(3)
+        if wait_for(lambda r: any("Write a command" in t for t in texts(r))):
+            adb("shell", "input", "text", "what%stime%sis%sit")
+            time.sleep(1)
+            send = node(dump(), "Send")
+            if send is not None:
+                tap(send)
+            answered = wait_for(lambda r: any(t.startswith("It is ") for t in texts(r)), seconds=8) is not None
         root = dump()
-    check("typed command", typed is not None and any(t.startswith("It is ") for t in texts(root)), root=root)
+    check("typed command", answered, root=root)
 
     adb("shell", "am", "start", "-W", "-n", f"{PKG}/.MainActivity")
     time.sleep(3)
