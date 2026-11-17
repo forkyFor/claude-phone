@@ -23,9 +23,10 @@ comodino.
   mentre scrivi o leggi.
 - Può essere la **schermata Home** e l'**app assistente** del telefono: il tasto Home e il
   gesto dell'assistente portano sempre a Claude; riparte dopo un riavvio.
-- **Dettatura** con il riconoscimento vocale del telefono, tre comandi a voce ("nuova chat",
-  "apri progetti", "indietro") e **lettura ad alta voce** opzionale con un pulsante Ferma
-  ben visibile.
+- **Dettatura** con il riconoscimento vocale del telefono, **lettura ad alta voce** opzionale
+  con un pulsante Ferma ben visibile, e brevi **comandi vocali** per Claude ("nuova chat",
+  "indietro") e per il telefono: **chiamate con conferma**, messaggi, volume, torcia, ora,
+  batteria, app.
 - **Allega** foto dalla fotocamera, immagini e file; **riceve** testo, link, immagini e PDF
   dal menu Condividi di Android in una nuova chat.
 - **Primo avvio guidato** in linguaggio semplice (italiano e inglese) e **schermate native**
@@ -84,6 +85,8 @@ consenti l'installazione, aprilo e segui la guida.
 |---|:-:|:-:|:-:|
 | Sito ufficiale a schermo intero, accesso persistente, tasto indietro, ricarica | ✔ | | |
 | Barra nativa, dettatura, lettura, fotocamera, allegati, condivisione in ingresso | ✔ | | |
+| Comandi vocali per il telefono: chiamate con conferma, messaggi, volume, torcia, ora, batteria, app | ✔ (chiede rubrica e telefono al primo uso) | | |
+| Claude che conduce una telefonata al posto tuo | | | ✘ Android blocca l'audio delle chiamate alle app; servirebbe un'API |
 | Schermata Home: il tasto Home torna a Claude, riparte dopo il riavvio | ✔ | | |
 | Il gesto dell'assistente avvia l'ascolto | ✔ (scegli l'app nelle impostazioni di Android) | | |
 | Schermo intero immersivo (le barre tornano con un gesto dal bordo) | ✔ | | |
@@ -157,6 +160,42 @@ Nella pagina di Claude usa **Continua con l'email**.
 L'indirizzo claude.ai/new accetta un parametro `q` che precompila il campo del messaggio
 ([articolo di aiuto di Anthropic](https://support.claude.com/en/articles/14729294-open-claude-desktop-with-a-link));
 la condivisione di testo usa quel link documentato.
+
+## Comandi vocali per il telefono e telefonate
+
+Premi il microfono e parla. Alcune frasi brevi vengono gestite **sul telefono** invece di
+essere inviate a Claude (di' "comandi vocali" per l'elenco completo):
+
+| Di' | Cosa succede |
+|---|---|
+| "Chiama Mario" · "Chiama il 333 123 4567" | Trova il contatto, mostra **chi e quale numero** e chiama dopo un conto alla rovescia visibile di 5 secondi (o subito se tocchi Chiama). Più contatti simili: scegli tu. |
+| "Chiama il numero" | Prende il numero dall'**ultima risposta di Claude** (o dal testo selezionato) e chiede conferma. Toccare un numero di telefono nella pagina fa lo stesso. |
+| "Manda un messaggio a Mario dicendo sto arrivando" | Apre l'app dei messaggi con il testo pronto: l'invio lo tocchi **tu**. |
+| "Alza / Abbassa il volume", "Silenzia", "Accendi / Spegni la torcia" | Eseguito subito. |
+| "Che ore sono?", "Quanta batteria?" | Risposta a voce. |
+| "Apri impostazioni", "Apri Wi-Fi", "Apri Calendario" | Lo apre (con il PIN del proprietario se il pulsante App è spento). |
+
+Tutto ciò che è più lungo di poche parole va a Claude come prima: "chiama gli amici di mio
+fratello per organizzare la cena" è un messaggio per Claude, non una telefonata.
+
+**Come entra Claude, oggi.** Chiedi a Claude nella chat, per esempio, il numero di una
+farmacia aperta adesso; quando arriva la risposta di' "chiama il numero" e conferma. Claude
+trova, il telefono chiama, **tu** parli.
+
+**Cosa non è possibile, e perché.** Claude non può *condurre* una telefonata al posto tuo:
+
+- Android non permette alle normali app di immettere audio in una chiamata né di
+  ascoltarla (la cattura dell'audio delle chiamate è bloccata per le app di terze parti da
+  Android 9/10).
+- Farlo comunque richiederebbe una connessione vocale in tempo reale con un modello di IA,
+  quindi un'API e una chiave: questo progetto, per scelta, non ne usa.
+- Una macchina che chiama persone a tuo nome comporta obblighi di consenso e trasparenza
+  (nell'UE un'IA che parla con una persona deve dichiararlo). Merita un progetto a sé,
+  fatto con cura.
+
+Per questo l'app non chiama mai in silenzio: una persona vede sempre il numero prima, e i
+numeri che arrivano dalla pagina aspettano sempre "Chiama" o un "sì" detto a voce. Non
+ancora verificato su un dispositivo reale; vedi [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
 
 ## Fragili per natura: i tre "strumenti di pagina"
 
@@ -240,6 +279,8 @@ I telefoni vecchi lasciati sempre in carica vanno trattati con rispetto.
 - Foto e file condivisi in attesa di essere allegati stanno nella cache privata dell'app e
   vengono cancellati dopo un giorno.
 - Il PIN del proprietario è salvato solo come hash con sale.
+- La rubrica (solo se usi le chiamate a voce) viene letta sul telefono per trovare un numero;
+  non viene mai scritta nella pagina né inviata altrove.
 - Ciò che fai su claude.ai è regolato dai termini e dall'informativa privacy di Anthropic.
 
 ## Compilazione e release

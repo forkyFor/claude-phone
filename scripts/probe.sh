@@ -35,6 +35,14 @@ else
 fi
 adb exec-out screencap -p > "out/${LABEL}-setup.png"
 if adb shell ps | grep -q "$PKG"; then START=ok; else START=crashed; fi
+
+# 1b) Voice commands for the phone (a sentence is handed over as if recognised).
+VOICE=skipped
+if [ "${UI_WALK:-false}" = "true" ] && [ "$WALK" = ok ]; then
+  python3 "$(dirname "$0")/voice-walk.py" > "out/${LABEL}-voice-walk.txt" 2>&1
+  case $? in 0) VOICE=ok ;; *) VOICE=FAILED ;; esac
+  cat "out/${LABEL}-voice-walk.txt"
+fi
 adb logcat -d > "out/${LABEL}-logcat-ui.txt"
 UICRASH=$(grep -c "FATAL EXCEPTION" "out/${LABEL}-logcat-ui.txt")
 adb shell am force-stop "$PKG"
@@ -51,7 +59,7 @@ CRASH=$(grep -c "FATAL EXCEPTION" "out/${LABEL}-logcat.txt")
 echo "=== PROBE RESULT ${LABEL} ==="
 CRASH=$((CRASH + UICRASH))
 {
-  echo "android=${REL} api=${API} stock_webview=${WV:-unknown} engine=${ENGINE} install=${INSTALL} start=${START} ui_walk=${WALK} fatal_exceptions=${CRASH} url=${URL}"
+  echo "android=${REL} api=${API} stock_webview=${WV:-unknown} engine=${ENGINE} install=${INSTALL} start=${START} ui_walk=${WALK} voice=${VOICE} fatal_exceptions=${CRASH} url=${URL}"
   cat "out/${LABEL}-probe.jsonl"
 } > "out/${LABEL}-result.txt"
 cat "out/${LABEL}-result.txt"
@@ -59,10 +67,10 @@ echo "=== END ${LABEL} ==="
 
 {
   echo "### ${LABEL}"
-  echo "Android ${REL} (API ${API}) · stock WebView \`${WV:-unknown}\` · engine \`${ENGINE}\` · install=${INSTALL} · app start=${START} · guide walk=${WALK} · fatal exceptions=${CRASH}"
+  echo "Android ${REL} (API ${API}) · stock WebView \`${WV:-unknown}\` · engine \`${ENGINE}\` · install=${INSTALL} · app start=${START} · guide walk=${WALK} · voice commands=${VOICE} · fatal exceptions=${CRASH}"
   echo '```json'
   cat "out/${LABEL}-probe.jsonl"
   echo '```'
 } >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
 
-[ "$INSTALL" = 0 ] && [ "$START" = ok ] && [ "$CRASH" = 0 ] && [ "$WALK" != FAILED ]
+[ "$INSTALL" = 0 ] && [ "$START" = ok ] && [ "$CRASH" = 0 ] && [ "$WALK" != FAILED ] && [ "$VOICE" != FAILED ]

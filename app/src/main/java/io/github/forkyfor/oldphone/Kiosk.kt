@@ -40,12 +40,22 @@ object Kiosk {
         val d = dpm(ctx)
         // Besides this app: Settings (reachable only from the PIN-protected owner menu), and
         // the system camera and file picker, so attaching photos and files keeps working.
+        // The dialer and the in-call screen too, so voice calls and incoming calls work, and
+        // the messaging app for prepared messages.
         val helpers = listOf(
             Intent(Settings.ACTION_SETTINGS),
             Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE),
             Intent(Intent.ACTION_GET_CONTENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*"),
+            Intent(Intent.ACTION_DIAL, android.net.Uri.parse("tel:1")),
+            Intent(Intent.ACTION_SENDTO, android.net.Uri.parse("smsto:1")),
         ).mapNotNull { it.resolveActivity(ctx.packageManager)?.packageName }.filter { it != "android" }
-        d.setLockTaskPackages(admin(ctx), (listOf(ctx.packageName) + helpers).distinct().toTypedArray())
+        val telecom = listOfNotNull(
+            if (Build.VERSION.SDK_INT >= 23) {
+                (ctx.getSystemService(Context.TELECOM_SERVICE) as android.telecom.TelecomManager).defaultDialerPackage
+            } else null,
+            "com.android.server.telecom", "com.android.incallui",
+        )
+        d.setLockTaskPackages(admin(ctx), (listOf(ctx.packageName) + helpers + telecom).distinct().toTypedArray())
         if (Build.VERSION.SDK_INT >= 28) {
             // Keep only the power menu: no status bar, notifications, Home or Recents.
             d.setLockTaskFeatures(admin(ctx), DevicePolicyManager.LOCK_TASK_FEATURE_GLOBAL_ACTIONS)

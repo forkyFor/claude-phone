@@ -83,6 +83,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     private lateinit var rest: RestScreen
 
     private lateinit var dictation: Dictation
+    private lateinit var phone: PhoneActions
     private lateinit var speaker: Speaker
 
     private var keyboardVisible = false
@@ -125,6 +126,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         createdLook = prefs.language + "/" + prefs.theme
         dictation = Dictation(this, this)
         speaker = Speaker(this, { updateReadButton() }, { showBanner(getString(R.string.read_unavailable)) })
+        phone = PhoneActions(this, phoneHost)
         buildLayout()
         setupInsets()
         extraHosts = prefs.extraHostSet()
@@ -197,6 +199,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         super.onDestroy()
         if (!::root.isInitialized) return
         handler.removeCallbacksAndMessages(null)
+        phone.dismiss()
         dictation.destroy()
         speaker.shutdown()
         activeFileRequest?.deliver(null)
@@ -236,6 +239,11 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
 
     private fun handleIntent(intent: Intent) {
         wake()
+        // Debug builds only: the emulator test hands over an already "recognised" sentence,
+        // because CI emulators have no microphone. Release builds never read this extra.
+        if (BuildConfig.DEBUG && intent.getBooleanExtra(EXTRA_PROBE, false)) {
+            intent.getStringExtra(EXTRA_PROBE_SAY)?.let { said -> handler.postDelayed({ onFinal(said) }, 2500L) }
+        }
         when (intent.action) {
             Intent.ACTION_ASSIST, Intent.ACTION_VOICE_COMMAND -> handler.postDelayed({ startListening() }, 300L)
             Intent.ACTION_VIEW -> intent.data?.let { uri ->
@@ -651,7 +659,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         probeHttp = code
     }
 
-    override fun onExternalLink(uri: Uri) = openExternal(uri)
+    override fun onExternalLink(uri: Uri) {
+        // Phone numbers in the page become a native call screen that always asks first.
+        if (uri.scheme.equals("tel", ignoreCase = true)) phone.callFromLink(uri) else openExternal(uri)
+    }
 
     override fun onEngineCrashed() {
         val now = System.currentTimeMillis()
@@ -882,8 +893,13 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         val cb = permissionCallbacks.remove(requestCode) ?: return
         val granted = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
         if (!granted) {
-            val mic = permissions.contains(Manifest.permission.RECORD_AUDIO)
-            showBanner(getString(if (mic) R.string.perm_mic_denied else R.string.perm_camera_denied), sticky = true) {
+            val message = when {
+                permissions.contains(Manifest.permission.RECORD_AUDIO) -> R.string.perm_mic_denied
+                permissions.contains(Manifest.permission.CAMERA) -> R.string.perm_camera_denied
+                permissions.contains(Manifest.permission.READ_CONTACTS) -> R.string.phone_contacts_denied
+                else -> R.string.perm_phone_denied
+            }
+            showBanner(getString(message), sticky = true) {
                 requireOwner {
                     startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
                 }
@@ -1038,14 +1054,35 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     }
 
     override fun onFinal(text: String) {
+        // A "yes" / "no" for a call waiting for confirmation comes first.
+        if (phone.handleAnswer(text)) return
         when (VoiceCommands.match(text)) {
             VoiceCommand.NEW_CHAT -> load(UrlPolicy.NEW_CHAT_URL)
             VoiceCommand.PROJECTS -> load(UrlPolicy.PROJECTS_URL)
             VoiceCommand.BACK -> if (engine?.canGoBack() == true) engine?.goBack()
             VoiceCommand.STOP -> speaker.stop()
             VoiceCommand.READ -> readLastReply()
-            null -> typeIntoPage(text)
+            null -> {
+                val command = if (prefs.phoneCommands) PhoneCommands.parse(text) else null
+                if (command != null) phone.run(command, text) else typeIntoPage(text)
+            }
         }
+    }
+
+    /** What the phone commands may use from this screen. */
+    private val phoneHost = object : PhoneActions.Host {
+        override fun permissions(names: List<String>, result: (Boolean) -> Unit) = withPermissions(names, result)
+        override fun banner(text: String, action: (() -> Unit)?) = showBanner(text, sticky = action != null, action = action)
+        override fun say(text: String) = speaker.speak(text, speechLocale(this@MainActivity))
+        override fun lastReply(result: (String?) -> Unit) {
+            val e = engine
+            if (e == null) result(null) else e.pageTool("lastReply", null, result)
+        }
+        override fun typeIntoPage(text: String) = this@MainActivity.typeIntoPage(text)
+        override fun ownerGate(then: () -> Unit) {
+            if (prefs.showApps && !dedicated()) then() else requireOwner(then)
+        }
+        override fun dedicated(): Boolean = Kiosk.isLocked(this@MainActivity) || (prefs.kiosk && Kiosk.isDeviceOwner(this@MainActivity))
     }
 
     override fun onError(code: Int) {
@@ -1264,6 +1301,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         const val EXTRA_PROBE = "probe"
         const val EXTRA_PROBE_URL = "probe_url"
         const val EXTRA_PROBE_ENGINE = "probe_engine"
+        const val EXTRA_PROBE_SAY = "probe_say"
 
         private const val MATCH = ViewGroup.LayoutParams.MATCH_PARENT
         private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT

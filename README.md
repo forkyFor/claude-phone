@@ -21,8 +21,9 @@ phone simply *is* the Claude device on your desk, in the kitchen or next to the 
   phone settings (can be switched off in the owner menu). It hides while you type or read.
 - Can be the phone's **Home screen** and **assistant app**: the Home button and the
   assistant gesture always lead to Claude; it starts again after a restart.
-- **Push-to-talk dictation** with the phone's own speech recognition, three spoken commands
-  ("new chat", "open projects", "back"), and optional **read aloud** with a visible Stop.
+- **Push-to-talk dictation** with the phone's own speech recognition, optional **read aloud**
+  with a visible Stop, and short **voice commands** for Claude ("new chat", "back") and for the
+  phone: **calls with confirmation**, messages, volume, flashlight, time, battery, apps.
 - **Attach** photos from the camera, pictures and files; **receive** text, links, images and
   PDFs from Android's Share menu into a new chat.
 - A **first-run guide** in plain language (English and Italian) and **native screens**
@@ -80,6 +81,8 @@ allow the installation, open it and follow the guide.
 |---|:-:|:-:|:-:|
 | Official site full screen, persistent sign-in, back button, reload | ✔ | | |
 | Native bar, dictation, read aloud, camera, file attach, share-in | ✔ | | |
+| Voice commands for the phone: calls with confirmation, messages, volume, flashlight, time, battery, apps | ✔ (asks for contacts and phone permission on first use) | | |
+| Claude holding a phone conversation for you | | | ✘ Android blocks call audio for apps; would need an API |
 | Home screen: Home button returns to Claude, starts after reboot | ✔ | | |
 | Assistant gesture starts listening | ✔ (you pick the app in Android settings) | | |
 | Immersive full screen (bars return with an edge swipe) | ✔ | | |
@@ -150,6 +153,40 @@ Use **Continue with email** on the Claude page.
 The address claude.ai/new accepts a `q` parameter that pre-fills the message box
 ([Anthropic help article](https://support.claude.com/en/articles/14729294-open-claude-desktop-with-a-link));
 that documented link is what share-in uses for text.
+
+## Voice commands for the phone, and calls
+
+Press the microphone and speak. A few short sentences are handled **on the phone** instead of
+being sent to Claude (say "voice commands" for the full list):
+
+| Say | What happens |
+|---|---|
+| "Call Mario" · "Call 333 123 4567" | Finds the contact, shows **who and which number**, and calls after a visible 5-second countdown (or at once if you touch Call). Several matches: you pick one. |
+| "Call the number" | Takes the phone number from **Claude's last reply** (or the text you selected) and asks you to confirm. Touching a phone number in the page does the same. |
+| "Send a message to Mario saying I'm on my way" | Opens the messaging app with the text ready: **you** press Send. |
+| "Volume up / down", "Mute", "Turn on / off the flashlight" | Done at once. |
+| "What time is it?", "Battery level" | Answered aloud. |
+| "Open settings", "Open Wi-Fi", "Open Calendar" | Opens it (with the owner PIN if the Apps button is off). |
+
+Anything longer than a few words goes to Claude as before, so "call my brother's friends to
+organise dinner" is a message for Claude, not a phone call.
+
+**How Claude fits in today.** Ask Claude in the chat for, say, the number of a pharmacy open
+now; when the reply arrives, say "call the number" and confirm. Claude finds, the phone
+calls, **you** talk.
+
+**What is not possible, and why.** Claude cannot *hold* a phone conversation for you:
+
+- Android does not let ordinary apps put audio into a phone call or listen to it (call
+  audio capture has been blocked for third-party apps since Android 9/10).
+- Doing it anyway would need a real-time voice connection to an AI model, which means an
+  API and a key: this project uses neither, by design.
+- A machine calling people in your name raises consent and disclosure duties (in the EU an
+  AI talking to a person must say so). That deserves its own careful project.
+
+So the app never places a call silently: a person always sees the number first, and numbers
+coming from the page always wait for "Call" or a spoken "yes". Not verified on a real
+device yet; see [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
 
 ## Fragile by design: the three "page tools"
 
@@ -229,6 +266,8 @@ Old phones that stay plugged in all day deserve respect.
 - Photos and shared files waiting to be attached sit in the app's private cache and are
   deleted after a day.
 - The owner PIN is stored only as a salted hash.
+- Contacts (only if you use voice calls) are read on the phone to find a number; they are
+  never typed into the page or sent anywhere.
 - What you do on claude.ai is governed by Anthropic's terms and privacy policy.
 
 ## Building and releasing

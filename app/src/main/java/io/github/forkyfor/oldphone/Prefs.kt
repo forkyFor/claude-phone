@@ -53,6 +53,16 @@ class Prefs(ctx: Context) {
         get() = bool("show_apps", true)
         set(v) = put("show_apps", v)
 
+    /** Local voice commands for the phone: calls, messages, volume, flashlight, time, battery, apps. */
+    var phoneCommands: Boolean
+        get() = bool("phone_commands", true)
+        set(v) = put("phone_commands", v)
+
+    /** A contact named by voice is called after a visible 5 s countdown, without touching. */
+    var callCountdown: Boolean
+        get() = bool("call_countdown", true)
+        set(v) = put("call_countdown", v)
+
     var reduceMotion: Boolean
         get() = bool("reduce_motion", lowEnd)
         set(v) = put("reduce_motion", v)

@@ -18,6 +18,7 @@ on:
       - .github/workflows/emulator.yml
       - scripts/probe.sh
       - scripts/ui-walk.py
+      - scripts/voice-walk.py
 
 permissions:
   contents: read
@@ -119,5 +120,7 @@ jobs:
             cat "$f"
             walk="${f%-result.txt}-ui-walk.txt"
             [ -f "$walk" ] && tail -n 2 "$walk" | cut -c1-600
+            voice="${f%-result.txt}-voice-walk.txt"
+            [ -f "$voice" ] && grep -E "^VOICE" "$voice" | cut -c1-300
             echo
           done | tee -a "$GITHUB_STEP_SUMMARY"

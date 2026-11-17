@@ -141,6 +141,14 @@ class OwnerActivity : BaseActivity() {
         col.addView(Ui.body(c, getString(R.string.owner_dictation_help), muted = true))
         col.addView(Ui.switchRow(c, getString(R.string.owner_read), prefs.readAloud) { prefs.readAloud = it })
         col.addView(Ui.body(c, getString(R.string.owner_read_help), muted = true))
+        col.addView(Ui.switchRow(c, getString(R.string.owner_phone_commands), prefs.phoneCommands) { prefs.phoneCommands = it })
+        col.addView(Ui.body(c, getString(R.string.owner_phone_commands_help), muted = true))
+        col.addView(Ui.switchRow(c, getString(R.string.owner_call_countdown), prefs.callCountdown) { prefs.callCountdown = it })
+        col.addView(Ui.body(c, getString(R.string.owner_call_countdown_help), muted = true))
+        col.addView(Ui.secondaryButton(c, getString(R.string.phone_help_title)) {
+            android.app.AlertDialog.Builder(this).setTitle(R.string.phone_help_title).setMessage(R.string.phone_help)
+                .setPositiveButton(android.R.string.ok, null).show()
+        })
         col.addView(Ui.secondaryButton(c, getString(R.string.owner_assistant)) { open(Settings.ACTION_VOICE_INPUT_SETTINGS) })
         col.addView(Ui.body(c, getString(R.string.owner_assistant_help), muted = true))
 

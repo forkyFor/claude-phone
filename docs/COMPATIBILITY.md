@@ -127,6 +127,9 @@ Only write what you actually tried.
 | Signing in, staying signed in, chatting | Not verified (no account in tests) |
 | Google sign-in blocked in WebView | Not verified here; documented behaviour of Google |
 | Page voice mode (getUserMedia), native dictation, read aloud | Not verified (emulators have no usable audio in CI) |
+| Phone voice commands: parsing (EN/IT), number extraction, contact matching | **Verified** by unit tests |
+| Phone voice commands on a device: help, time, call confirmation and countdown, cancel, open settings | Emulator check written (`scripts/voice-walk.py`, sentence handed over without a microphone); **not verified on a real device** |
+| Contacts lookup, messages, flashlight, volume, calls in dedicated mode | Not verified |
 | Camera capture, file picker, share-in | Not verified |
 | Downloads | Not verified; WebView limits are by design, see README |
 | Home role, assistant role, boot start | Not verified |
