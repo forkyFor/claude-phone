@@ -82,7 +82,8 @@ def probe_start(*extras):
 
 
 def meeting_files():
-    return adb("shell", "run-as", PKG, "ls", "files/meetings").split()
+    # One name per line: note names contain spaces.
+    return [l.strip() for l in adb("shell", "run-as", PKG, "ls", "-1", "files/meetings").splitlines() if l.strip()]
 
 
 def meetings():
@@ -179,6 +180,11 @@ def main():
     adb("shell", "am", "start", "-W", "-n", f"{PKG}/.MainActivity")
     time.sleep(3)
     root = dump()
+    # Emulators with an old stock WebView show the native "engine too old" screen over the bar.
+    anyway = node(root, "Try anyway")
+    if anyway is not None:
+        tap(anyway)
+        root = dump()
     typed = node(root, "Type")
     if typed is not None:
         tap(typed)
