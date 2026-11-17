@@ -84,6 +84,7 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
 
     private lateinit var dictation: Dictation
     private lateinit var phone: PhoneActions
+    private var readRequested = false
     private lateinit var speaker: Speaker
 
     private var keyboardVisible = false
@@ -125,7 +126,9 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         if (probe) intent.getStringExtra(EXTRA_PROBE_ENGINE)?.let { prefs.engine = it }
         createdLook = prefs.language + "/" + prefs.theme
         dictation = Dictation(this, this)
-        speaker = Speaker(this, { updateReadButton() }, { showBanner(getString(R.string.read_unavailable)) })
+        // "No text-to-speech" is only worth saying when reading aloud was asked for: for phone
+        // answers (time, battery...) the text is already on screen.
+        speaker = Speaker(this, { updateReadButton() }, { if (readRequested) showBanner(getString(R.string.read_unavailable)) })
         phone = PhoneActions(this, phoneHost)
         buildLayout()
         setupInsets()
@@ -1073,7 +1076,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
     private val phoneHost = object : PhoneActions.Host {
         override fun permissions(names: List<String>, result: (Boolean) -> Unit) = withPermissions(names, result)
         override fun banner(text: String, action: (() -> Unit)?) = showBanner(text, sticky = action != null, action = action)
-        override fun say(text: String) = speaker.speak(text, speechLocale(this@MainActivity))
+        override fun say(text: String) {
+            readRequested = false
+            speaker.speak(text, speechLocale(this@MainActivity))
+        }
         override fun lastReply(result: (String?) -> Unit) {
             val e = engine
             if (e == null) result(null) else e.pageTool("lastReply", null, result)
@@ -1122,7 +1128,10 @@ class MainActivity : BaseActivity(), EngineHost, Dictation.Listener {
         }
         engine?.pageTool("lastReply", null) { text ->
             if (text.isNullOrBlank()) showBanner(getString(R.string.read_nothing), sticky = true)
-            else speaker.speak(text, speechLocale(this))
+            else {
+                readRequested = true
+                speaker.speak(text, speechLocale(this))
+            }
         }
     }
 

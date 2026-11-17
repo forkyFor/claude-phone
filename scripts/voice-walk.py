@@ -87,7 +87,8 @@ def main():
     check("time answer", any(t.startswith("It is ") for t in texts(root)), "| ".join(t for t in texts(root) if t.startswith("It is")), root=root)
 
     root = say("call 123 4567", wait=3)
-    shown = [t for t in texts(root) if t.startswith("Call") or t == "Phone call"]
+    # Dialog buttons are often shown in capitals ("CALL (4)"): compare without case.
+    shown = [t for t in texts(root) if t.lower().startswith("call") or t == "Phone call"]
     check("call confirmation with countdown", any(re.match(r"Call \(\d\)", t, re.I) for t in shown), " | ".join(shown), root=root)
     cancel = node(root, "Cancel")
     if cancel is not None:
