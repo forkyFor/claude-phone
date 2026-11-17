@@ -32,6 +32,12 @@ Apri la pagina **Releases** del progetto nel browser del telefono:
 
 Se il nome del file finisce con `-debug`, leggi [Build di debug](#build-di-debug) più sotto.
 
+### Versioni di prova
+
+Per provare l'ultima versione non ancora rilasciata, apri questo link nel browser del telefono:
+`https://github.com/forkyFor/claude-phone/releases/download/preview/OldPhoneClaude-preview-lite-debug.apk`
+È una build di debug, ricompilata da sola dopo ogni modifica, e può non funzionare.
+
 ## Installazione, passo per passo
 
 1. Nella pagina Releases, sotto **Assets**, tocca il file scelto. Il browser può avvisare

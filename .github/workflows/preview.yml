@@ -1,0 +1,76 @@
+name: Preview build
+
+# Test builds for the owner's phone: every push to a work branch (claude/**) or to main
+# publishes the lite debug APK as the pre-release "preview", always at the same address:
+#   https://github.com/<owner>/<repo>/releases/download/preview/OldPhoneClaude-preview-lite-debug.apk
+# It is clearly marked as a pre-release test build and is separate from the vX.Y.Z releases.
+on:
+  push:
+    branches: ["claude/**", "main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: preview
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Same debug key from one preview to the next, so a new preview installs over the
+      # previous one. It lives only in the Actions cache, never in the repository; if the
+      # cache expires (7 days unused) a new key is made and the next preview needs a reinstall.
+      - name: Restore the preview signing key
+        id: key
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: preview-debug-keystore-v1
+
+      - name: Build
+        run: |
+          ./gradlew --no-daemon :app:assembleLiteDebug
+          mkdir -p preview
+          cp app/build/outputs/apk/lite/debug/app-lite-debug.apk preview/OldPhoneClaude-preview-lite-debug.apk
+          (cd preview && sha256sum OldPhoneClaude-preview-lite-debug.apk > SHA256SUMS.txt)
+          cat preview/SHA256SUMS.txt
+
+      - name: Save the preview signing key
+        if: steps.key.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: preview-debug-keystore-v1
+
+      - name: Publish the "preview" pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          SUM=$(cut -d' ' -f1 preview/SHA256SUMS.txt)
+          {
+            echo "> **TEST BUILD (debug).** Built automatically from \`${GITHUB_REF_NAME}\` at commit ${GITHUB_SHA::7}."
+            echo "> Not a release: it may be unfinished. Independent project, not affiliated with Anthropic."
+            echo
+            echo "Install it on the phone by opening this link in the phone's browser:"
+            echo "https://github.com/${GITHUB_REPOSITORY}/releases/download/preview/OldPhoneClaude-preview-lite-debug.apk"
+            echo
+            echo "SHA-256: \`${SUM}\`"
+          } > notes.md
+          gh release delete preview --cleanup-tag --yes 2>/dev/null || true
+          gh release create preview preview/OldPhoneClaude-preview-lite-debug.apk preview/SHA256SUMS.txt \
+            --prerelease --latest=false --target "$GITHUB_SHA" \
+            --title "Preview (test build)" --notes-file notes.md
